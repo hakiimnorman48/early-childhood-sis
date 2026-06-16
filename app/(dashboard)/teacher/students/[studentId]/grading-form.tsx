@@ -1,8 +1,9 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useState, useTransition } from "react";
 import { cn } from "@/lib/utils";
-import { saveGrades, type GradeState } from "@/app/actions/grading";
+import { saveGrades, markDomainComplete, type GradeState } from "@/app/actions/grading";
+import { CheckCircle } from "lucide-react";
 
 const ENGLISH_LEVELS: Record<string, Array<{ code: string; text: string }>> = {
   Speaking: [
@@ -61,6 +62,46 @@ interface GradingFormProps {
   entryMap: Record<string, EntryData>;
   overallComment: string;
   isPublished: boolean;
+  completedAreaIds: string[];
+}
+
+function MarkCompleteButton({
+  studentId,
+  areaId,
+  periodId,
+  isComplete,
+}: {
+  studentId: string;
+  areaId: string;
+  periodId: string;
+  isComplete: boolean;
+}) {
+  const [done, setDone] = useState(isComplete);
+  const [isPending, startTransition] = useTransition();
+
+  if (done) {
+    return (
+      <span className="inline-flex items-center gap-1 text-xs text-green-600 font-medium">
+        <CheckCircle size={14} /> Domain complete
+      </span>
+    );
+  }
+
+  return (
+    <button
+      type="button"
+      disabled={isPending}
+      onClick={() => {
+        startTransition(async () => {
+          const result = await markDomainComplete(studentId, areaId, periodId);
+          if (result?.success) setDone(true);
+        });
+      }}
+      className="text-xs text-indigo-600 hover:text-indigo-800 font-medium border border-indigo-200 px-3 py-1 rounded-lg hover:bg-indigo-50 transition-colors disabled:opacity-50"
+    >
+      {isPending ? "Saving…" : "Mark Domain Complete & Save Draft"}
+    </button>
+  );
 }
 
 export function GradingForm({
@@ -70,13 +111,15 @@ export function GradingForm({
   entryMap,
   overallComment,
   isPublished,
+  completedAreaIds,
 }: GradingFormProps) {
   const [state, formAction, isPending] = useActionState<GradeState, FormData>(
     saveGrades,
     null
   );
 
-  // Local state to drive live P/C/B preview (uncontrolled inputs write here via onChange)
+  const completedSet = new Set(completedAreaIds);
+
   const [scorePreviews, setScorePreviews] = useState<Record<string, number>>(() => {
     const init: Record<string, number> = {};
     for (const d of domains) {
@@ -107,14 +150,24 @@ export function GradingForm({
 
       {/* Domain cards */}
       {domains.map((domain) => (
-        <div key={domain.areaId} className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-          <div className="px-5 py-4 bg-indigo-50 border-b border-indigo-100">
-            <h2 className="font-semibold text-gray-900">{domain.areaName}</h2>
-            <p className="text-xs text-gray-500 mt-0.5">
-              {domain.customScale
-                ? "English scale — select highest level reached per skill"
-                : "Enter score 0–10 per indicator → auto-mapped to P / C / B"}
-            </p>
+        <div key={domain.areaId} className={`bg-white rounded-xl border shadow-sm overflow-hidden ${completedSet.has(domain.areaId) ? "border-green-200" : "border-gray-200"}`}>
+          <div className={`px-5 py-4 border-b flex items-center justify-between ${completedSet.has(domain.areaId) ? "bg-green-50 border-green-100" : "bg-indigo-50 border-indigo-100"}`}>
+            <div>
+              <h2 className="font-semibold text-gray-900">{domain.areaName}</h2>
+              <p className="text-xs text-gray-500 mt-0.5">
+                {domain.customScale
+                  ? "English scale — select highest level reached per skill"
+                  : "Enter score 0–10 per indicator → auto-mapped to P / C / B"}
+              </p>
+            </div>
+            {!domain.customScale && (
+              <MarkCompleteButton
+                studentId={studentId}
+                areaId={domain.areaId}
+                periodId={periodId}
+                isComplete={completedSet.has(domain.areaId)}
+              />
+            )}
           </div>
 
           {/* Narrative textarea — standard domains only */}
@@ -197,7 +250,6 @@ export function GradingForm({
                         <td className="px-4 py-2.5 text-gray-400 text-xs">{skill.order}</td>
                         <td className="px-3 py-2.5 text-gray-700">{skill.name}</td>
                         <td className="px-3 py-2.5">
-                          {/* hidden inputs so the server action knows which area this skill belongs to */}
                           <input type="hidden" name={`area_${skill.id}`} value={domain.areaId} />
                           <input
                             type="number"
@@ -209,7 +261,16 @@ export function GradingForm({
                             onChange={(e) => {
                               const v = parseFloat(e.target.value);
                               if (!isNaN(v)) {
-                                setScorePreviews((prev) => ({ ...prev, [skill.id]: v }));
+                                const rounded = Math.round(Math.max(0, Math.min(10, v)) * 2) / 2;
+                                setScorePreviews((prev) => ({ ...prev, [skill.id]: rounded }));
+                              }
+                            }}
+                            onBlur={(e) => {
+                              const v = parseFloat(e.target.value);
+                              if (!isNaN(v)) {
+                                const rounded = Math.round(Math.max(0, Math.min(10, v)) * 2) / 2;
+                                e.target.value = String(rounded);
+                                setScorePreviews((prev) => ({ ...prev, [skill.id]: rounded }));
                               }
                             }}
                             className="w-24 text-center border border-gray-200 rounded-lg px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300 mx-auto block"

@@ -37,6 +37,7 @@ model User {
   role     String
   schoolId String
   phone    String?
+  address  String?
   isActive Boolean @default(true)
 
   createdAt DateTime @default(now())
@@ -96,6 +97,7 @@ model Student {
   attendanceRecords      AttendanceRecord[]
   studentPeriodSummaries StudentPeriodSummary[]
   reportCards            ReportCard[]
+  domainCompletions      DomainCompletion[]
 }
 
 model ParentStudent {
@@ -127,6 +129,7 @@ model Period {
   studentPeriodSummaries StudentPeriodSummary[]
   reportCards            ReportCard[]
   domainAssignments      DomainAssignment[]
+  domainCompletions      DomainCompletion[]
 }
 
 model CompetencyArea {
@@ -139,9 +142,10 @@ model CompetencyArea {
   schoolId    String
   customScale Boolean @default(false)
 
-  school            School             @relation(fields: [schoolId], references: [id])
-  skills            Skill[]
-  domainAssignments DomainAssignment[]
+  school             School              @relation(fields: [schoolId], references: [id])
+  skills             Skill[]
+  domainAssignments  DomainAssignment[]
+  domainCompletions  DomainCompletion[]
 }
 
 model Skill {
@@ -265,6 +269,20 @@ model Announcement {
   createdAt DateTime @default(now())
 
   school School @relation(fields: [schoolId], references: [id])
+}
+
+model DomainCompletion {
+  id               String   @id @default(cuid())
+  studentId        String
+  competencyAreaId String
+  periodId         String
+  completedAt      DateTime @default(now())
+
+  student        Student        @relation(fields: [studentId], references: [id])
+  competencyArea CompetencyArea @relation(fields: [competencyAreaId], references: [id])
+  period         Period         @relation(fields: [periodId], references: [id])
+
+  @@unique([studentId, competencyAreaId, periodId])
 }
 
 model AuditLog {

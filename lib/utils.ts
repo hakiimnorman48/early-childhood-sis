@@ -8,15 +8,13 @@ export function cn(...inputs: ClassValue[]) {
 export function scoreToColor(score: number): string {
   if (score <= 3) return "red";
   if (score <= 6) return "yellow";
-  if (score <= 8) return "green";
-  return "blue";
+  return "green";
 }
 
 export function scoreToLabel(score: number): string {
-  if (score <= 3) return "Not Yet";
-  if (score <= 6) return "Emerging";
-  if (score <= 8) return "Developing";
-  return "Achieved";
+  if (score <= 3) return "Pengenalan";
+  if (score <= 6) return "Cukup";
+  return "Baik";
 }
 
 export function scoreToCode(score: number): string {

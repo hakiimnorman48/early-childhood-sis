@@ -29,7 +29,7 @@ const adminNav: NavItem[] = [
   { href: "/admin/classes", icon: <School size={18} />, label: "Classes" },
   { href: "/admin/students", icon: <Users size={18} />, label: "Students" },
   { href: "/admin/accounts", icon: <Settings size={18} />, label: "Accounts" },
-  { href: "/admin/periods", icon: <CalendarCheck size={18} />, label: "Periods" },
+  { href: "/admin/periods", icon: <CalendarCheck size={18} />, label: "Grading Periods" },
 ];
 
 const teacherNav: NavItem[] = [

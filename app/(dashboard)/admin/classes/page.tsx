@@ -1,5 +1,6 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { CreateClassButton, EditClassButton } from "./classes-client";
 
 export default async function ClassesPage() {
   const session = await auth();
@@ -23,9 +24,7 @@ export default async function ClassesPage() {
           <h1 className="text-xl font-bold text-gray-900">Classes</h1>
           <p className="text-sm text-gray-500">{classes.length} class groups</p>
         </div>
-        <button className="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors">
-          + New Class
-        </button>
+        <CreateClassButton />
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
@@ -41,9 +40,12 @@ export default async function ClassesPage() {
                     {cls.grade}
                   </span>
                 </div>
-                <div className="text-right">
-                  <p className="text-2xl font-bold text-indigo-600">{cls.students.length}</p>
-                  <p className="text-xs text-gray-400">students</p>
+                <div className="flex items-center gap-3">
+                  <div className="text-right">
+                    <p className="text-2xl font-bold text-indigo-600">{cls.students.length}</p>
+                    <p className="text-xs text-gray-400">students</p>
+                  </div>
+                  <EditClassButton cls={{ id: cls.id, name: cls.name, grade: cls.grade }} />
                 </div>
               </div>
 

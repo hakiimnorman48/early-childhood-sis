@@ -20,13 +20,13 @@ export default async function DashboardLayout({
   ]);
 
   return (
-    <div className="flex h-screen bg-gray-50 overflow-hidden">
+    <div className="flex h-screen bg-gray-50 overflow-hidden print:block print:h-auto print:overflow-visible">
       <Sidebar
         role={user?.role ?? "admin"}
         userName={user?.name ?? ""}
         schoolName={school?.name ?? "School"}
       />
-      <main className="flex-1 overflow-y-auto">
+      <main className="flex-1 overflow-y-auto print:overflow-visible">
         {children}
       </main>
     </div>

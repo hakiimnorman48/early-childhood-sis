@@ -1,6 +1,7 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { formatDate } from "@/lib/utils";
+import { CreateAccountButton, EditAccountButton } from "./accounts-client";
 
 const roleBadge: Record<string, string> = {
   admin: "bg-purple-100 text-purple-700",
@@ -24,9 +25,7 @@ export default async function AccountsPage() {
           <h1 className="text-xl font-bold text-gray-900">User Accounts</h1>
           <p className="text-sm text-gray-500">{users.length} accounts</p>
         </div>
-        <button className="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors">
-          + Create Account
-        </button>
+        <CreateAccountButton />
       </div>
 
       <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
@@ -38,6 +37,7 @@ export default async function AccountsPage() {
               <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Role</th>
               <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Status</th>
               <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Joined</th>
+              <th className="px-4 py-3" />
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-50">
@@ -63,6 +63,11 @@ export default async function AccountsPage() {
                   </span>
                 </td>
                 <td className="px-4 py-3 text-gray-400 text-xs">{formatDate(u.createdAt)}</td>
+                <td className="px-4 py-3 text-right">
+                  <EditAccountButton
+                    user={{ id: u.id, name: u.name, email: u.email, role: u.role, isActive: u.isActive }}
+                  />
+                </td>
               </tr>
             ))}
           </tbody>

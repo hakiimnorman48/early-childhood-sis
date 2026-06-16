@@ -354,12 +354,22 @@ export default async function ReportCardPage({
         </div>
       </div>
 
-      {/* Print-specific CSS */}
       <style>{`
         @media print {
-          body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-          @page { margin: 1.5cm; size: A4; }
-          #report-card { box-shadow: none !important; border: none !important; }
+          * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+          @page { margin: 2cm; size: A4 portrait; }
+          body { margin: 0; padding: 0; }
+          #report-card {
+            box-shadow: none !important;
+            border: none !important;
+            width: 100% !important;
+            max-width: none !important;
+          }
+          table { page-break-inside: auto; border-collapse: collapse; }
+          tr { page-break-inside: avoid; page-break-after: auto; }
+          thead { display: table-header-group; }
+          tfoot { display: table-footer-group; }
+          .break-inside-avoid-page { page-break-inside: avoid; break-inside: avoid; }
         }
       `}</style>
     </>

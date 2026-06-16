@@ -15,6 +15,7 @@ export default defineConfig({
     path: "prisma/migrations",
   },
   datasource: {
+    url: dbUrl,
     adapter: new PrismaBetterSqlite3({ url: resolvedPath }),
   },
 });

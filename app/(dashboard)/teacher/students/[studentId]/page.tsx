@@ -82,6 +82,10 @@ export default async function StudentGradePage({
     where: { studentId_periodId: { studentId, periodId: activePeriod.id } },
   });
 
+  const completions = await prisma.domainCompletion.findMany({
+    where: { studentId, periodId: activePeriod.id },
+  });
+
   // Derive domain narrative from first skill entry's narrativeComment
   const domainNarratives: Record<string, string | null> = {};
   for (const d of domainAssignments) {
@@ -151,6 +155,7 @@ export default async function StudentGradePage({
           entryMap={entryMap}
           overallComment={summary?.overallComment ?? ""}
           isPublished={summary?.isPublished ?? false}
+          completedAreaIds={completions.map((c) => c.competencyAreaId)}
         />
       ) : (
         <div className="bg-gray-50 border border-dashed border-gray-300 rounded-xl p-10 text-center text-gray-400">

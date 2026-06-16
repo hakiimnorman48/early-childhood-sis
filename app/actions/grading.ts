@@ -4,6 +4,24 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 
+export async function markDomainComplete(
+  studentId: string,
+  competencyAreaId: string,
+  periodId: string
+) {
+  const session = await auth();
+  if (!session?.user) return { error: "Unauthorized" };
+
+  await prisma.domainCompletion.upsert({
+    where: { studentId_competencyAreaId_periodId: { studentId, competencyAreaId, periodId } },
+    update: { completedAt: new Date() },
+    create: { studentId, competencyAreaId, periodId },
+  });
+
+  revalidatePath(`/teacher/students/${studentId}`);
+  return { success: true };
+}
+
 function scoreToCode(score: number): string {
   if (score <= 3) return "P";
   if (score <= 6) return "C";
@@ -44,7 +62,7 @@ export async function saveGrades(
     const skillId = key.slice(6);
     const raw = parseFloat(value as string);
     if (isNaN(raw)) continue;
-    const score = Math.max(0, Math.min(10, raw));
+    const score = Math.round(Math.max(0, Math.min(10, raw)) * 2) / 2;
     const areaId = skillAreaMap[skillId];
     const narrative = areaId ? (narratives[areaId] ?? null) : null;
     ops.push(
