@@ -7,12 +7,12 @@ import { CheckCircle } from "lucide-react";
 
 const ENGLISH_LEVELS: Record<string, Array<{ code: string; text: string }>> = {
   Speaking: [
-    { code: "a", text: "Body language." },
-    { code: "b", text: "One or two words." },
-    { code: "c", text: "Short sentence." },
+    { code: "a", text: "Express self using body language." },
+    { code: "b", text: "Express self using one or two words." },
+    { code: "c", text: "Express self using short sentences." },
   ],
   Listening: [
-    { code: "a", text: "No respond." },
+    { code: "a", text: "No response." },
     { code: "b", text: "Initiates to respond." },
     { code: "c", text: "Responds appropriately." },
   ],
@@ -20,12 +20,12 @@ const ENGLISH_LEVELS: Record<string, Array<{ code: string; text: string }>> = {
     { code: "a", text: "Enjoys book or being read to." },
     { code: "b", text: "Looks at symbol or picture." },
     { code: "c", text: "Picture read." },
-    { code: "d", text: "Retell the story with her/his words." },
+    { code: "d", text: "Retell the story with her/his own words." },
   ],
   Singing: [
     { code: "a", text: "Listens to the song." },
     { code: "b", text: "Follows to sing the song." },
-    { code: "c", text: "Sing the song." },
+    { code: "c", text: "Sings the song independently." },
   ],
 };
 

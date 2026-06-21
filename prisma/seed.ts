@@ -213,13 +213,13 @@ async function main() {
     {
       id: "area-motorik", name: "Motorik dan Musik", order: 4,
       skills: [
-        { id: "sk-mo-1", name: "Berlari dan melompat", order: 1 },
-        { id: "sk-mo-2", name: "Memanjat dan menjaga keseimbangan", order: 2 },
-        { id: "sk-mo-3", name: "Memegang pensil dengan benar", order: 3 },
-        { id: "sk-mo-4", name: "Menggunting dengan presisi", order: 4 },
-        { id: "sk-mo-5", name: "Menempel dan melipat", order: 5 },
-        { id: "sk-mo-6", name: "Merespons ritme musik", order: 6 },
-        { id: "sk-mo-7", name: "Bergerak sesuai musik", order: 7 },
+        { id: "sk-mo-1", name: "Melempar/menangkap/menendang suatu benda sesuai dengan arahan teman atau guru.", order: 1 },
+        { id: "sk-mo-2", name: "Berputar kemudian berhenti tanpa terjatuh.", order: 2 },
+        { id: "sk-mo-3", name: "Mengikuti ketukan musik dari lagu yang diperdengarkan atau dinyanyikan.", order: 3 },
+        { id: "sk-mo-4", name: "Mengikuti 3 gerakan berbeda yang berurutan, yang dicontohkan oleh orang lain.", order: 4 },
+        { id: "sk-mo-5", name: "Ikut menyanyikan lagu yang sedang didengarnya dengan kata yang jelas.", order: 5 },
+        { id: "sk-mo-6", name: "Menyanyikan sebuah lagu, sendiri atau bersama dengan orang lain.", order: 6 },
+        { id: "sk-mo-7", name: "Memainkan suatu alat musik atau benda sehingga menghasilkan suatu nada atau ketukan.", order: 7 },
       ],
     },
     {
@@ -240,18 +240,18 @@ async function main() {
     {
       id: "area-math", name: "Matematika dan Sains", order: 6,
       skills: [
-        { id: "sk-ma-1", name: "Berhitung 1-20", order: 1 },
-        { id: "sk-ma-2", name: "Mengenal bentuk geometri", order: 2 },
-        { id: "sk-ma-3", name: "Membandingkan ukuran", order: 3 },
-        { id: "sk-ma-4", name: "Mengenal warna", order: 4 },
-        { id: "sk-ma-5", name: "Pola dan urutan", order: 5 },
-        { id: "sk-ma-6", name: "Mengenal konsep waktu", order: 6 },
-        { id: "sk-ma-7", name: "Pengamatan alam sekitar", order: 7 },
-        { id: "sk-ma-8", name: "Eksperimen sederhana", order: 8 },
-        { id: "sk-ma-9", name: "Mencocokkan dan mengklasifikasikan", order: 9 },
-        { id: "sk-ma-10", name: "Pemecahan masalah sederhana", order: 10 },
-        { id: "sk-ma-11", name: "Mengenal angka 1-10", order: 11 },
-        { id: "sk-ma-12", name: "Pengukuran dasar", order: 12 },
+        { id: "sk-ma-1", name: "Mengelompokkan benda berdasarkan warna/bentuk/jenis/ukuran dan menyebutkan pengelompokkan tersebut.", order: 1 },
+        { id: "sk-ma-2", name: "Menjelaskan persamaan atau perbedaan diantara beberapa barang.", order: 2 },
+        { id: "sk-ma-3", name: "Membuat pola (pattern) sederhana dan menyebutkannya.", order: 3 },
+        { id: "sk-ma-4", name: "Mengurutkan benda dari ukuran terbesar hingga terkecil atau sebaliknya.", order: 4 },
+        { id: "sk-ma-5", name: "Menggunakan kata perbandingan untuk menjelaskan 2 benda.", order: 5 },
+        { id: "sk-ma-6", name: "Menghitung, menjumlahkan dan mengurangkan dengan menggunakan sejumlah benda.", order: 6 },
+        { id: "sk-ma-7", name: "Menghitung 2 kumpulan benda dan membedakan yang banyak, sedikit atau sama.", order: 7 },
+        { id: "sk-ma-8", name: "Menggunakan kata posisi sesuai dengan konteks.", order: 8 },
+        { id: "sk-ma-9", name: "Menggunakan kata jarak sesuai dengan konteks.", order: 9 },
+        { id: "sk-ma-10", name: "Mengenali perubahan pada benda dan menyebutkan perubahan tersebut.", order: 10 },
+        { id: "sk-ma-11", name: "Mengenali dan menyebutkan benda mati dan benda hidup.", order: 11 },
+        { id: "sk-ma-12", name: "Menjelaskan perbedaan antara benda mati dan benda hidup yang sedang didiskusikan.", order: 12 },
       ],
     },
     {
@@ -280,7 +280,7 @@ async function main() {
     for (const skill of area.skills) {
       await prisma.skill.upsert({
         where: { id: skill.id },
-        update: {},
+        update: { name: skill.name, order: skill.order },
         create: {
           id: skill.id,
           name: skill.name,
@@ -334,7 +334,7 @@ async function main() {
   );
 
   function rand(min: number, max: number) {
-    return Math.round((Math.random() * (max - min) + min) * 10) / 10;
+    return Math.round((Math.random() * (max - min) + min) * 2) / 2;
   }
 
   function scoreToCode(score: number): string {
