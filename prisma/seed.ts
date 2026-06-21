@@ -135,22 +135,23 @@ async function main() {
   });
 
   // ── Students ─────────────────────────────────────────────────────────────────
+  // picTeacherId: assigned after teachers are created
   const studentData = [
-    { id: "stu-ayla", name: "Ayla Putri Santoso", nick: "Ayla", dob: "2020-03-15", classId: classB.id, parentIdx: 0, gender: "F" },
-    { id: "stu-bima", name: "Bima Arya Rahayu", nick: "Bima", dob: "2020-07-22", classId: classB.id, parentIdx: 1, gender: "M" },
-    { id: "stu-caca", name: "Cahaya Nadia Fauzi", nick: "Caca", dob: "2020-01-10", classId: classB.id, parentIdx: 2, gender: "F" },
-    { id: "stu-dira", name: "Diran Wahyudi", nick: "Dira", dob: "2020-05-08", classId: classB.id, parentIdx: 3, gender: "M" },
-    { id: "stu-evan", name: "Evan Hermawan", nick: "Evan", dob: "2021-02-14", classId: classA.id, parentIdx: 4, gender: "M" },
-    { id: "stu-fira", name: "Fira Sari", nick: "Fira", dob: "2021-06-30", classId: classA.id, parentIdx: 5, gender: "F" },
-    { id: "stu-gani", name: "Gani Kusuma", nick: "Gani", dob: "2021-09-05", classId: classA.id, parentIdx: 6, gender: "M" },
-    { id: "stu-hani", name: "Hani Astuti", nick: "Hani", dob: "2021-11-20", classId: classA.id, parentIdx: 7, gender: "F" },
+    { id: "stu-ayla", name: "Ayla Putri Santoso", nick: "Ayla", dob: "2020-03-15", classId: classB.id, parentIdx: 0, gender: "F", picTeacherId: () => teacherDevina.id },
+    { id: "stu-bima", name: "Bima Arya Rahayu", nick: "Bima", dob: "2020-07-22", classId: classB.id, parentIdx: 1, gender: "M", picTeacherId: () => teacherDevina.id },
+    { id: "stu-caca", name: "Cahaya Nadia Fauzi", nick: "Caca", dob: "2020-01-10", classId: classB.id, parentIdx: 2, gender: "F", picTeacherId: () => teacherIda.id },
+    { id: "stu-dira", name: "Diran Wahyudi", nick: "Dira", dob: "2020-05-08", classId: classB.id, parentIdx: 3, gender: "M", picTeacherId: () => teacherIda.id },
+    { id: "stu-evan", name: "Evan Hermawan", nick: "Evan", dob: "2021-02-14", classId: classA.id, parentIdx: 4, gender: "M", picTeacherId: () => teacherDevina.id },
+    { id: "stu-fira", name: "Fira Sari", nick: "Fira", dob: "2021-06-30", classId: classA.id, parentIdx: 5, gender: "F", picTeacherId: () => teacherIda.id },
+    { id: "stu-gani", name: "Gani Kusuma", nick: "Gani", dob: "2021-09-05", classId: classA.id, parentIdx: 6, gender: "M", picTeacherId: () => teacherDevina.id },
+    { id: "stu-hani", name: "Hani Astuti", nick: "Hani", dob: "2021-11-20", classId: classA.id, parentIdx: 7, gender: "F", picTeacherId: () => teacherIda.id },
   ];
 
   const students = await Promise.all(
     studentData.map((s) =>
       prisma.student.upsert({
         where: { id: s.id },
-        update: {},
+        update: { picTeacherId: s.picTeacherId() },
         create: {
           id: s.id,
           fullName: s.name,
@@ -159,6 +160,7 @@ async function main() {
           classId: s.classId,
           schoolId: school.id,
           gender: s.gender,
+          picTeacherId: s.picTeacherId(),
           enrollmentDate: new Date("2025-07-15"),
         },
       })

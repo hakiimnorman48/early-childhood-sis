@@ -16,6 +16,7 @@ export default defineConfig({
   },
   datasource: {
     url: dbUrl,
+    // @ts-expect-error Prisma 7 adapter type definition doesn't include `adapter` yet
     adapter: new PrismaBetterSqlite3({ url: resolvedPath }),
   },
 });

@@ -1,6 +1,6 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, FileText } from "lucide-react";
 import { GradingForm } from "./grading-form";
@@ -17,18 +17,17 @@ export default async function StudentGradePage({
 
   const student = await prisma.student.findUnique({
     where: { id: studentId },
-    include: { class: true },
+    include: {
+      class: true,
+      picTeacher: { select: { id: true, name: true } },
+    },
   });
 
   if (!student) return notFound();
 
-  // Teachers can only grade students in their own classes
-  if (role === "teacher") {
-    const access = await prisma.classTeacher.findUnique({
-      where: { classId_teacherId: { classId: student.classId, teacherId } },
-    });
-    if (!access) redirect("/teacher");
-  }
+  // Teachers can view any student, but only PIC teachers can edit
+  const isPic = role === "teacher" ? student.picTeacherId === teacherId : false;
+  const readOnly = role === "teacher" && !isPic;
 
   const activePeriod = await prisma.period.findFirst({
     where: { schoolId: student.schoolId, isActive: true },
@@ -50,12 +49,11 @@ export default async function StudentGradePage({
     );
   }
 
-  // Load domains assigned to this teacher (or all if admin) for this class + period
+  // Load ALL domain assignments for this class + period (no teacher filter — PIC grades all domains)
   const domainAssignments = await prisma.domainAssignment.findMany({
     where: {
       classId: student.classId,
       periodId: activePeriod.id,
-      ...(role === "teacher" ? { teacherId } : {}),
     },
     include: {
       competencyArea: {
@@ -64,10 +62,8 @@ export default async function StudentGradePage({
     },
   });
 
-  // Sort by competencyArea.order in JS (avoids Prisma join ordering complexity)
   domainAssignments.sort((a, b) => a.competencyArea.order - b.competencyArea.order);
 
-  // Load existing progress entries for this student
   const entries = await prisma.progressEntry.findMany({
     where: { studentId, periodId: activePeriod.id },
   });
@@ -77,7 +73,6 @@ export default async function StudentGradePage({
       entries.map((e) => [e.skillId, { score: e.score, mappedCode: e.mappedCode, narrative: e.narrativeComment }])
     );
 
-  // Load existing overall summary
   const summary = await prisma.studentPeriodSummary.findUnique({
     where: { studentId_periodId: { studentId, periodId: activePeriod.id } },
   });
@@ -86,7 +81,6 @@ export default async function StudentGradePage({
     where: { studentId, periodId: activePeriod.id },
   });
 
-  // Derive domain narrative from first skill entry's narrativeComment
   const domainNarratives: Record<string, string | null> = {};
   for (const d of domainAssignments) {
     const first = d.competencyArea.skills[0];
@@ -129,11 +123,16 @@ export default async function StudentGradePage({
               {student.class.name} · Period:{" "}
               <span className="text-indigo-600 font-medium">{activePeriod.name}</span>
             </p>
-            {domains.length === 0 && (
-              <p className="text-sm text-orange-600 mt-2">
-                No domains assigned to you for this period and class.
-              </p>
-            )}
+            <p className="text-xs text-gray-400 mt-1">
+              PIC Teacher:{" "}
+              {student.picTeacher ? (
+                <span className={`font-medium ${isPic ? "text-indigo-600" : "text-gray-600"}`}>
+                  {isPic ? "You" : student.picTeacher.name}
+                </span>
+              ) : (
+                <span className="text-orange-500">Not assigned</span>
+              )}
+            </p>
           </div>
           {summary?.isPublished ? (
             <span className="px-2.5 py-1 text-xs font-medium bg-green-100 text-green-700 rounded-full">
@@ -156,10 +155,11 @@ export default async function StudentGradePage({
           overallComment={summary?.overallComment ?? ""}
           isPublished={summary?.isPublished ?? false}
           completedAreaIds={completions.map((c) => c.competencyAreaId)}
+          readOnly={readOnly}
         />
       ) : (
         <div className="bg-gray-50 border border-dashed border-gray-300 rounded-xl p-10 text-center text-gray-400">
-          Contact your admin to assign competency domains to your account for this period.
+          No domain assignments found for this class and period. Contact your admin.
         </div>
       )}
     </div>

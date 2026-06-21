@@ -47,6 +47,7 @@ model User {
   classTeachers     ClassTeacher[]
   domainAssignments DomainAssignment[]
   parentStudents    ParentStudent[]
+  picStudents       Student[]          @relation("StudentPIC")
 }
 
 model Class {
@@ -83,6 +84,7 @@ model Student {
   dateOfBirth    DateTime
   classId        String
   schoolId       String
+  picTeacherId   String?
   enrollmentDate DateTime  @default(now())
   photo          String?
   medicalNotes   String?
@@ -92,6 +94,7 @@ model Student {
 
   class                  Class                  @relation(fields: [classId], references: [id])
   school                 School                 @relation(fields: [schoolId], references: [id])
+  picTeacher             User?                  @relation("StudentPIC", fields: [picTeacherId], references: [id])
   parentStudents         ParentStudent[]
   progressEntries        ProgressEntry[]
   attendanceRecords      AttendanceRecord[]

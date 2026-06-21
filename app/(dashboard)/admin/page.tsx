@@ -72,7 +72,7 @@ export default async function AdminDashboard() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-gray-800 truncate">{s.fullName}</p>
-                  <p className="text-xs text-gray-400">{s.class.name} · {s.class.grade}</p>
+                  <p className="text-xs text-gray-500">{s.class.name} · {s.class.grade}</p>
                 </div>
                 <span className="text-xs text-gray-400">
                   {new Date(s.createdAt).toLocaleDateString("en-ID", { day: "2-digit", month: "short" })}

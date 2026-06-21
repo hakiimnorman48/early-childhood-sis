@@ -4,6 +4,33 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 
+export async function assignPicTeacher(formData: FormData) {
+  const schoolId = await requireAdmin();
+
+  const studentId = formData.get("studentId") as string;
+  const picTeacherId = (formData.get("picTeacherId") as string) || null;
+
+  if (!studentId) return { error: "Student ID is required." };
+
+  const student = await prisma.student.findUnique({ where: { id: studentId } });
+  if (!student || student.schoolId !== schoolId) return { error: "Student not found." };
+
+  if (picTeacherId) {
+    const teacher = await prisma.user.findUnique({ where: { id: picTeacherId } });
+    if (!teacher || teacher.schoolId !== schoolId || teacher.role !== "teacher") {
+      return { error: "Teacher not found." };
+    }
+  }
+
+  await prisma.student.update({
+    where: { id: studentId },
+    data: { picTeacherId },
+  });
+
+  revalidatePath("/admin/students");
+  return { success: true };
+}
+
 async function requireAdmin() {
   const session = await auth();
   const role = (session?.user as any)?.role;

@@ -12,6 +12,14 @@ export async function markDomainComplete(
   const session = await auth();
   if (!session?.user) return { error: "Unauthorized" };
 
+  const role = (session.user as any).role as string;
+  const userId = (session.user as any).id as string;
+
+  if (role === "teacher") {
+    const student = await prisma.student.findUnique({ where: { id: studentId }, select: { picTeacherId: true } });
+    if (!student || student.picTeacherId !== userId) return { error: "Not authorized." };
+  }
+
   await prisma.domainCompletion.upsert({
     where: { studentId_competencyAreaId_periodId: { studentId, competencyAreaId, periodId } },
     update: { completedAt: new Date() },
@@ -37,12 +45,23 @@ export async function saveGrades(
   const session = await auth();
   if (!session?.user) return { message: null, error: "Unauthorized" };
 
+  const role = (session.user as any).role as string;
+  const userId = (session.user as any).id as string;
+
   const studentId = formData.get("studentId") as string;
   const periodId = formData.get("periodId") as string;
   const action = formData.get("_action") as string;
   const overallComment = (formData.get("overall_comment") as string) ?? "";
 
   if (!studentId || !periodId) return { message: null, error: "Missing required fields" };
+
+  // Teachers can only grade their own PIC students
+  if (role === "teacher") {
+    const student = await prisma.student.findUnique({ where: { id: studentId }, select: { picTeacherId: true } });
+    if (!student || student.picTeacherId !== userId) {
+      return { message: null, error: "You are not the PIC teacher for this student." };
+    }
+  }
 
   const isDraft = action !== "publish";
 

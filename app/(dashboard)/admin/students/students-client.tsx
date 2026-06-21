@@ -1,10 +1,15 @@
 "use client";
 
 import { useRef, useState, useTransition } from "react";
-import { updateStudent, updateParentContact } from "@/app/actions/students";
+import { updateStudent, updateParentContact, assignPicTeacher } from "@/app/actions/students";
 import { X } from "lucide-react";
 
 interface ClassOption {
+  id: string;
+  name: string;
+}
+
+interface TeacherOption {
   id: string;
   name: string;
 }
@@ -231,5 +236,46 @@ export function EditStudentButton({
         )}
       </Dialog>
     </>
+  );
+}
+
+export function AssignPicButton({
+  studentId,
+  currentPicId,
+  teachers,
+}: {
+  studentId: string;
+  currentPicId: string | null;
+  teachers: TeacherOption[];
+}) {
+  const [isPending, startTransition] = useTransition();
+  const [error, setError] = useState<string | null>(null);
+
+  function handleChange(e: React.ChangeEvent<HTMLSelectElement>) {
+    setError(null);
+    const fd = new FormData();
+    fd.set("studentId", studentId);
+    fd.set("picTeacherId", e.target.value);
+    startTransition(async () => {
+      const result = await assignPicTeacher(fd);
+      if (result?.error) setError(result.error);
+    });
+  }
+
+  return (
+    <div className="flex flex-col gap-0.5">
+      <select
+        defaultValue={currentPicId ?? ""}
+        onChange={handleChange}
+        disabled={isPending}
+        className="text-xs border border-gray-200 rounded-lg px-2 py-1 focus:outline-none focus:ring-2 focus:ring-indigo-300 disabled:opacity-50 bg-white min-w-[130px]"
+      >
+        <option value="">— Unassigned —</option>
+        {teachers.map((t) => (
+          <option key={t.id} value={t.id}>{t.name}</option>
+        ))}
+      </select>
+      {error && <p className="text-xs text-red-500">{error}</p>}
+    </div>
   );
 }
