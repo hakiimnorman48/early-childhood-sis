@@ -40,9 +40,14 @@ export default function LoginPage() {
       <div className="w-full max-w-md">
         {/* Logo / Brand */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-indigo-600 text-white text-2xl font-bold shadow-lg mb-4">
-            🌈
-          </div>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/logo.jpeg"
+            alt="TK Cita Pelangi"
+            width={112}
+            height={112}
+            style={{ display: "block", margin: "0 auto 1rem", objectFit: "contain" }}
+          />
           <h1 className="text-2xl font-bold text-gray-900">TK Cita Pelangi</h1>
           <p className="text-gray-500 text-sm mt-1">Student Information System</p>
         </div>
