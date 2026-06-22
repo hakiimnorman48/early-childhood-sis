@@ -99,9 +99,16 @@ export default async function ParentReportCardPage({
   });
   allDomains.sort((a, b) => a.competencyArea.order - b.competencyArea.order);
 
-  const entries = await prisma.progressEntry.findMany({
-    where: { studentId: student.id, periodId },
-  });
+  const [entries, domainExamples] = await Promise.all([
+    prisma.progressEntry.findMany({ where: { studentId: student.id, periodId } }),
+    prisma.domainExample.findMany({ where: { studentId: student.id, periodId } }),
+  ]);
+
+  const contohMap: Record<string, Array<{ slot: number; date: string | null; session: string | null; text: string | null }>> = {};
+  for (const ex of domainExamples) {
+    if (!contohMap[ex.competencyAreaId]) contohMap[ex.competencyAreaId] = [];
+    contohMap[ex.competencyAreaId].push({ slot: ex.slot, date: ex.date, session: ex.session, text: ex.text });
+  }
 
   const entryMap: Record<string, { score: number; mappedCode: string | null; narrative: string | null }> =
     Object.fromEntries(
@@ -151,9 +158,17 @@ export default async function ParentReportCardPage({
           style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
         >
           {/* School Header */}
-          <div className="border-b-2 border-gray-800 px-10 py-6 text-center">
-            <h1 className="text-2xl font-bold tracking-wide uppercase">{student.school.name}</h1>
-            <p className="text-sm text-gray-600 mt-1">Laporan Perkembangan Anak</p>
+          <div className="border-b-2 border-gray-800 px-10 py-6 flex items-center justify-center gap-6">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/logo.jpeg"
+              alt="TK Cita Pelangi"
+              className="object-contain flex-shrink-0 w-20 h-20"
+            />
+            <div className="text-center">
+              <h1 className="text-2xl font-bold tracking-wide uppercase">{student.school.name}</h1>
+              <p className="text-sm text-gray-600 mt-1">Laporan Perkembangan Anak</p>
+            </div>
           </div>
 
           <div className="px-10 py-6 space-y-6">
@@ -215,6 +230,7 @@ export default async function ParentReportCardPage({
               const area = d.competencyArea;
               const firstSkillId = area.skills[0]?.id;
               const domainNarrative = firstSkillId ? (entryMap[firstSkillId]?.narrative ?? null) : null;
+              const domainContohs = (contohMap[area.id] ?? []).sort((a, b) => a.slot - b.slot);
 
               return (
                 <div key={d.id} className="break-inside-avoid-page">
@@ -225,6 +241,24 @@ export default async function ParentReportCardPage({
                     <div className="mb-2">
                       <span className="text-xs font-semibold text-gray-500 uppercase">Keterangan guru: </span>
                       <span className="text-sm text-gray-800">{domainNarrative}</span>
+                    </div>
+                  )}
+                  {domainContohs.length > 0 && (
+                    <div className="mb-3 space-y-1">
+                      <p className="text-xs font-semibold text-gray-500 uppercase">Contoh:</p>
+                      {domainContohs.map((c) => (
+                        <p key={c.slot} className="text-xs text-gray-700 pl-2">
+                          <span className="font-semibold">{c.slot}.</span>{" "}
+                          {c.date && (
+                            <span className="text-gray-500">
+                              {new Date(c.date + "T00:00:00").toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" })}
+                              {c.session ? ` · ${c.session}` : ""}
+                              {" — "}
+                            </span>
+                          )}
+                          {c.text}
+                        </p>
+                      ))}
                     </div>
                   )}
                   <table className="w-full text-sm border-collapse">
@@ -276,36 +310,52 @@ export default async function ParentReportCardPage({
                     <tr className="bg-gray-100">
                       <th className="border border-gray-300 px-2 py-1.5 text-left font-semibold text-xs w-8">No</th>
                       <th className="border border-gray-300 px-3 py-1.5 text-left font-semibold text-xs w-28">Skill</th>
-                      <th className="border border-gray-300 px-3 py-1.5 text-left font-semibold text-xs">{period.name}</th>
+                      <th className="border border-gray-300 px-3 py-1.5 text-left font-semibold text-xs">Indicator</th>
+                      <th className="border border-gray-300 px-2 py-1.5 text-center font-semibold text-xs w-10">✓</th>
                     </tr>
                   </thead>
                   <tbody>
                     {englishDomain.competencyArea.skills.map((skill) => {
                       const entry = entryMap[skill.id];
-                      const code = entry?.mappedCode ?? null;
+                      const achievedCode = entry?.mappedCode ?? null;
                       const levels = ENGLISH_LEVELS[skill.name] ?? [];
-                      const levelText = code ? levels.find((l) => l.code === code)?.text : null;
-                      return (
-                        <tr key={skill.id} className="even:bg-gray-50">
-                          <td className="border border-gray-200 px-2 py-2 text-center text-xs text-gray-500">
-                            {skill.order}
-                          </td>
-                          <td className="border border-gray-200 px-3 py-2 text-xs font-medium text-gray-700">
-                            {skill.name}
-                          </td>
-                          <td className="border border-gray-200 px-3 py-2 text-xs text-gray-800">
-                            {code && levelText ? (
-                              <span>
-                                <span className="font-bold text-indigo-700">{code}</span>
-                                {" — "}
-                                {levelText}
-                              </span>
-                            ) : (
-                              <span className="text-gray-300">—</span>
+                      return levels.map((level, levelIdx) => {
+                        const isAchieved = achievedCode === level.code;
+                        return (
+                          <tr
+                            key={`${skill.id}-${level.code}`}
+                            className={isAchieved ? "bg-green-50" : levelIdx % 2 === 0 ? "bg-white" : "bg-gray-50"}
+                          >
+                            {levelIdx === 0 && (
+                              <>
+                                <td
+                                  className="border border-gray-200 px-2 py-1.5 text-center text-xs text-gray-500 align-top"
+                                  rowSpan={levels.length}
+                                >
+                                  {skill.order}
+                                </td>
+                                <td
+                                  className="border border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-700 align-top"
+                                  rowSpan={levels.length}
+                                >
+                                  {skill.name}
+                                </td>
+                              </>
                             )}
-                          </td>
-                        </tr>
-                      );
+                            <td className="border border-gray-200 px-3 py-1.5 text-xs text-gray-800">
+                              <span className="font-semibold text-gray-500 mr-1">{level.code}.</span>
+                              {level.text}
+                            </td>
+                            <td className="border border-gray-200 px-2 py-1.5 text-center text-xs">
+                              {isAchieved ? (
+                                <span className="text-green-600 font-bold text-base">✓</span>
+                              ) : (
+                                <span className="text-gray-200">□</span>
+                              )}
+                            </td>
+                          </tr>
+                        );
+                      });
                     })}
                   </tbody>
                 </table>

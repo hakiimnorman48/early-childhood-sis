@@ -20,6 +20,19 @@ export async function markDomainComplete(
     if (!student || student.picTeacherId !== userId) return { error: "Not authorized." };
   }
 
+  // Validate both Contoh slots are fully filled
+  const examples = await prisma.domainExample.findMany({
+    where: { studentId, competencyAreaId, periodId },
+  });
+  const slot1 = examples.find((e) => e.slot === 1);
+  const slot2 = examples.find((e) => e.slot === 2);
+  if (
+    !slot1?.date || !slot1?.session || !slot1?.text ||
+    !slot2?.date || !slot2?.session || !slot2?.text
+  ) {
+    return { error: "Both Contoh examples (date, session, and observation) must be filled before marking a domain complete." };
+  }
+
   await prisma.domainCompletion.upsert({
     where: { studentId_competencyAreaId_periodId: { studentId, competencyAreaId, periodId } },
     update: { completedAt: new Date() },
@@ -68,8 +81,14 @@ export async function saveGrades(
   // Collect domain narratives and skill→area mappings from form
   const narratives: Record<string, string> = {};
   const skillAreaMap: Record<string, string> = {};
+  const standardAreaIds = new Set<string>();
+
   for (const [key, value] of formData.entries()) {
-    if (key.startsWith("narrative_")) narratives[key.slice(10)] = value as string;
+    if (key.startsWith("narrative_")) {
+      const areaId = key.slice(10);
+      narratives[areaId] = value as string;
+      standardAreaIds.add(areaId);
+    }
     if (key.startsWith("area_")) skillAreaMap[key.slice(5)] = value as string;
   }
 
@@ -93,7 +112,7 @@ export async function saveGrades(
     );
   }
 
-  // English level selections (a/b/c/d → stored as index 1–4 + code letter)
+  // English level selections (a/b/c/d)
   for (const [key, value] of formData.entries()) {
     if (!key.startsWith("english_")) continue;
     const skillId = key.slice(8);
@@ -108,6 +127,22 @@ export async function saveGrades(
         create: { studentId, skillId, periodId, score: levelIndex, mappedCode: code, isDraft },
       })
     );
+  }
+
+  // Save Contoh examples for each standard domain
+  for (const areaId of standardAreaIds) {
+    for (const slot of [1, 2]) {
+      const dateVal = ((formData.get(`contoh_${areaId}_${slot}_date`) as string) ?? "").trim();
+      const sessionVal = ((formData.get(`contoh_${areaId}_${slot}_session`) as string) ?? "").trim();
+      const textVal = ((formData.get(`contoh_${areaId}_${slot}_text`) as string) ?? "").trim();
+      ops.push(
+        prisma.domainExample.upsert({
+          where: { studentId_competencyAreaId_periodId_slot: { studentId, competencyAreaId: areaId, periodId, slot } },
+          update: { date: dateVal || null, session: sessionVal || null, text: textVal || null },
+          create: { studentId, competencyAreaId: areaId, periodId, slot, date: dateVal || null, session: sessionVal || null, text: textVal || null },
+        })
+      );
+    }
   }
 
   try {

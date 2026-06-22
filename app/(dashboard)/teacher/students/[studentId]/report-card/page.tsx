@@ -102,9 +102,18 @@ export default async function ReportCardPage({
       entries.map((e) => [e.skillId, { score: e.score, mappedCode: e.mappedCode, narrative: e.narrativeComment }])
     );
 
-  const summary = await prisma.studentPeriodSummary.findUnique({
-    where: { studentId_periodId: { studentId, periodId: activePeriod.id } },
-  });
+  const [summary, domainExamples] = await Promise.all([
+    prisma.studentPeriodSummary.findUnique({
+      where: { studentId_periodId: { studentId, periodId: activePeriod.id } },
+    }),
+    prisma.domainExample.findMany({ where: { studentId, periodId: activePeriod.id } }),
+  ]);
+
+  const contohMap: Record<string, Array<{ slot: number; date: string | null; session: string | null; text: string | null }>> = {};
+  for (const ex of domainExamples) {
+    if (!contohMap[ex.competencyAreaId]) contohMap[ex.competencyAreaId] = [];
+    contohMap[ex.competencyAreaId].push({ slot: ex.slot, date: ex.date, session: ex.session, text: ex.text });
+  }
 
   const attendanceRecords = await prisma.attendanceRecord.findMany({
     where: { studentId, periodId: activePeriod.id },
@@ -157,10 +166,18 @@ export default async function ReportCardPage({
           style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
         >
           {/* ── School Header ── */}
-          <div className="border-b-2 border-gray-800 px-10 py-6 text-center">
-            <h1 className="text-2xl font-bold tracking-wide uppercase">{student.school.name}</h1>
-            <p className="text-sm text-gray-600 mt-1">Laporan Perkembangan Anak</p>
-            <p className="text-xs text-gray-500 mt-0.5">Jakarta, Indonesia</p>
+          <div className="border-b-2 border-gray-800 px-10 py-6 flex items-center justify-center gap-6">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/logo.jpeg"
+              alt="TK Cita Pelangi"
+              className="object-contain flex-shrink-0 w-20 h-20"
+            />
+            <div className="text-center">
+              <h1 className="text-2xl font-bold tracking-wide uppercase">{student.school.name}</h1>
+              <p className="text-sm text-gray-600 mt-1">Laporan Perkembangan Anak</p>
+              <p className="text-xs text-gray-500 mt-0.5">Jakarta, Indonesia</p>
+            </div>
           </div>
 
           <div className="px-10 py-6 space-y-6">
@@ -223,6 +240,8 @@ export default async function ReportCardPage({
               const firstSkillId = area.skills[0]?.id;
               const domainNarrative = firstSkillId ? (entryMap[firstSkillId]?.narrative ?? null) : null;
 
+              const domainContohs = (contohMap[area.id] ?? []).sort((a, b) => a.slot - b.slot);
+
               return (
                 <div key={d.id} className="break-inside-avoid-page">
                   <h2 className="text-sm font-bold uppercase tracking-wide text-gray-700 mb-2 border-b border-gray-200 pb-1">
@@ -233,6 +252,25 @@ export default async function ReportCardPage({
                     <div className="mb-2">
                       <span className="text-xs font-semibold text-gray-500 uppercase">Keterangan guru: </span>
                       <span className="text-sm text-gray-800">{domainNarrative}</span>
+                    </div>
+                  )}
+
+                  {domainContohs.length > 0 && (
+                    <div className="mb-3 space-y-1">
+                      <p className="text-xs font-semibold text-gray-500 uppercase">Contoh:</p>
+                      {domainContohs.map((c) => (
+                        <p key={c.slot} className="text-xs text-gray-700 pl-2">
+                          <span className="font-semibold">{c.slot}.</span>{" "}
+                          {c.date && (
+                            <span className="text-gray-500">
+                              {new Date(c.date + "T00:00:00").toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" })}
+                              {c.session ? ` · ${c.session}` : ""}
+                              {" — "}
+                            </span>
+                          )}
+                          {c.text}
+                        </p>
+                      ))}
                     </div>
                   )}
 
@@ -290,37 +328,55 @@ export default async function ReportCardPage({
                         Skill
                       </th>
                       <th className="border border-gray-300 px-3 py-1.5 text-left font-semibold text-xs">
-                        {activePeriod.name}
+                        Indicator
+                      </th>
+                      <th className="border border-gray-300 px-2 py-1.5 text-center font-semibold text-xs w-10">
+                        ✓
                       </th>
                     </tr>
                   </thead>
                   <tbody>
                     {englishDomain.competencyArea.skills.map((skill) => {
                       const entry = entryMap[skill.id];
-                      const code = entry?.mappedCode ?? null;
+                      const achievedCode = entry?.mappedCode ?? null;
                       const levels = ENGLISH_LEVELS[skill.name] ?? [];
-                      const levelText = code ? levels.find((l) => l.code === code)?.text : null;
-                      return (
-                        <tr key={skill.id} className="even:bg-gray-50">
-                          <td className="border border-gray-200 px-2 py-2 text-center text-xs text-gray-500">
-                            {skill.order}
-                          </td>
-                          <td className="border border-gray-200 px-3 py-2 text-xs font-medium text-gray-700">
-                            {skill.name}
-                          </td>
-                          <td className="border border-gray-200 px-3 py-2 text-xs text-gray-800">
-                            {code && levelText ? (
-                              <span>
-                                <span className="font-bold text-indigo-700">{code}</span>
-                                {" — "}
-                                {levelText}
-                              </span>
-                            ) : (
-                              <span className="text-gray-300">—</span>
+                      return levels.map((level, levelIdx) => {
+                        const isAchieved = achievedCode === level.code;
+                        return (
+                          <tr
+                            key={`${skill.id}-${level.code}`}
+                            className={levelIdx % 2 === 0 ? "bg-white" : "bg-gray-50"}
+                          >
+                            {levelIdx === 0 && (
+                              <>
+                                <td
+                                  className="border border-gray-200 px-2 py-1.5 text-center text-xs text-gray-500 align-top"
+                                  rowSpan={levels.length}
+                                >
+                                  {skill.order}
+                                </td>
+                                <td
+                                  className="border border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-700 align-top"
+                                  rowSpan={levels.length}
+                                >
+                                  {skill.name}
+                                </td>
+                              </>
                             )}
-                          </td>
-                        </tr>
-                      );
+                            <td className="border border-gray-200 px-3 py-1.5 text-xs text-gray-800">
+                              <span className="font-semibold text-gray-500 mr-1">{level.code}.</span>
+                              {level.text}
+                            </td>
+                            <td className="border border-gray-200 px-2 py-1.5 text-center text-xs">
+                              {isAchieved ? (
+                                <span className="text-green-600 font-bold text-base">✓</span>
+                              ) : (
+                                <span className="text-gray-200">□</span>
+                              )}
+                            </td>
+                          </tr>
+                        );
+                      });
                     })}
                   </tbody>
                 </table>

@@ -101,6 +101,7 @@ model Student {
   studentPeriodSummaries StudentPeriodSummary[]
   reportCards            ReportCard[]
   domainCompletions      DomainCompletion[]
+  domainExamples         DomainExample[]
 }
 
 model ParentStudent {
@@ -133,6 +134,7 @@ model Period {
   reportCards            ReportCard[]
   domainAssignments      DomainAssignment[]
   domainCompletions      DomainCompletion[]
+  domainExamples         DomainExample[]
 }
 
 model CompetencyArea {
@@ -149,6 +151,7 @@ model CompetencyArea {
   skills             Skill[]
   domainAssignments  DomainAssignment[]
   domainCompletions  DomainCompletion[]
+  domainExamples     DomainExample[]
 }
 
 model Skill {
@@ -297,4 +300,24 @@ model AuditLog {
   ipAddress String?
 
   createdAt DateTime @default(now())
+}
+
+model DomainExample {
+  id               String  @id @default(cuid())
+  studentId        String
+  competencyAreaId String
+  periodId         String
+  slot             Int
+  date             String?
+  session          String?
+  text             String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  student        Student        @relation(fields: [studentId], references: [id])
+  competencyArea CompetencyArea @relation(fields: [competencyAreaId], references: [id])
+  period         Period         @relation(fields: [periodId], references: [id])
+
+  @@unique([studentId, competencyAreaId, periodId, slot])
 }

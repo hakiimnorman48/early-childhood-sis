@@ -77,9 +77,16 @@ export default async function StudentGradePage({
     where: { studentId_periodId: { studentId, periodId: activePeriod.id } },
   });
 
-  const completions = await prisma.domainCompletion.findMany({
-    where: { studentId, periodId: activePeriod.id },
-  });
+  const [completions, domainExamples] = await Promise.all([
+    prisma.domainCompletion.findMany({ where: { studentId, periodId: activePeriod.id } }),
+    prisma.domainExample.findMany({ where: { studentId, periodId: activePeriod.id } }),
+  ]);
+
+  const contohMap: Record<string, Array<{ slot: number; date: string | null; session: string | null; text: string | null }>> = {};
+  for (const ex of domainExamples) {
+    if (!contohMap[ex.competencyAreaId]) contohMap[ex.competencyAreaId] = [];
+    contohMap[ex.competencyAreaId].push({ slot: ex.slot, date: ex.date, session: ex.session, text: ex.text });
+  }
 
   const domainNarratives: Record<string, string | null> = {};
   for (const d of domainAssignments) {
@@ -155,7 +162,7 @@ export default async function StudentGradePage({
           overallComment={summary?.overallComment ?? ""}
           isPublished={summary?.isPublished ?? false}
           completedAreaIds={completions.map((c) => c.competencyAreaId)}
-          readOnly={readOnly}
+          contohMap={contohMap}
         />
       ) : (
         <div className="bg-gray-50 border border-dashed border-gray-300 rounded-xl p-10 text-center text-gray-400">

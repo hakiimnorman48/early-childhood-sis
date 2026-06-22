@@ -7,12 +7,12 @@ import { CheckCircle } from "lucide-react";
 
 const ENGLISH_LEVELS: Record<string, Array<{ code: string; text: string }>> = {
   Speaking: [
-    { code: "a", text: "Express self using body language." },
-    { code: "b", text: "Express self using one or two words." },
-    { code: "c", text: "Express self using short sentences." },
+    { code: "a", text: "Body language." },
+    { code: "b", text: "One or two words." },
+    { code: "c", text: "Short sentence." },
   ],
   Listening: [
-    { code: "a", text: "No response." },
+    { code: "a", text: "No respond." },
     { code: "b", text: "Initiates to respond." },
     { code: "c", text: "Responds appropriately." },
   ],
@@ -20,12 +20,12 @@ const ENGLISH_LEVELS: Record<string, Array<{ code: string; text: string }>> = {
     { code: "a", text: "Enjoys book or being read to." },
     { code: "b", text: "Looks at symbol or picture." },
     { code: "c", text: "Picture read." },
-    { code: "d", text: "Retell the story with her/his own words." },
+    { code: "d", text: "Retell the story with her/his words." },
   ],
   Singing: [
     { code: "a", text: "Listens to the song." },
     { code: "b", text: "Follows to sing the song." },
-    { code: "c", text: "Sings the song independently." },
+    { code: "c", text: "Sing the song." },
   ],
 };
 
@@ -55,6 +55,13 @@ interface EntryData {
   narrative: string | null;
 }
 
+interface ContohEntry {
+  slot: number;
+  date: string | null;
+  session: string | null;
+  text: string | null;
+}
+
 interface GradingFormProps {
   studentId: string;
   periodId: string;
@@ -63,7 +70,7 @@ interface GradingFormProps {
   overallComment: string;
   isPublished: boolean;
   completedAreaIds: string[];
-  readOnly?: boolean;
+  contohMap: Record<string, ContohEntry[]>;
 }
 
 function MarkCompleteButton({
@@ -78,6 +85,7 @@ function MarkCompleteButton({
   isComplete: boolean;
 }) {
   const [done, setDone] = useState(isComplete);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
   if (done) {
@@ -89,19 +97,26 @@ function MarkCompleteButton({
   }
 
   return (
-    <button
-      type="button"
-      disabled={isPending}
-      onClick={() => {
-        startTransition(async () => {
-          const result = await markDomainComplete(studentId, areaId, periodId);
-          if (result?.success) setDone(true);
-        });
-      }}
-      className="text-xs text-indigo-600 hover:text-indigo-800 font-medium border border-indigo-200 px-3 py-1 rounded-lg hover:bg-indigo-50 transition-colors disabled:opacity-50"
-    >
-      {isPending ? "Saving…" : "Mark Domain Complete & Save Draft"}
-    </button>
+    <div className="flex flex-col items-end gap-1">
+      <button
+        type="button"
+        disabled={isPending}
+        onClick={() => {
+          setErrorMsg(null);
+          startTransition(async () => {
+            const result = await markDomainComplete(studentId, areaId, periodId);
+            if (result?.success) setDone(true);
+            else if (result?.error) setErrorMsg(result.error);
+          });
+        }}
+        className="text-xs text-indigo-600 hover:text-indigo-800 font-medium border border-indigo-200 px-3 py-1 rounded-lg hover:bg-indigo-50 transition-colors disabled:opacity-50"
+      >
+        {isPending ? "Saving…" : "Mark Domain Complete & Save Draft"}
+      </button>
+      {errorMsg && (
+        <p className="text-xs text-red-600 max-w-xs text-right">{errorMsg}</p>
+      )}
+    </div>
   );
 }
 
@@ -113,7 +128,7 @@ export function GradingForm({
   overallComment,
   isPublished,
   completedAreaIds,
-  readOnly = false,
+  contohMap,
 }: GradingFormProps) {
   const [state, formAction, isPending] = useActionState<GradeState, FormData>(
     saveGrades,
@@ -138,20 +153,13 @@ export function GradingForm({
       <input type="hidden" name="studentId" value={studentId} />
       <input type="hidden" name="periodId" value={periodId} />
 
-      {/* Read-only notice */}
-      {readOnly && (
-        <div className="px-4 py-3 rounded-lg text-sm bg-gray-100 text-gray-600 border border-gray-200">
-          You are viewing this student's grades. Only the assigned PIC teacher can edit.
-        </div>
-      )}
-
       {/* Status banner */}
-      {!readOnly && state?.message && (
+      {state?.message && (
         <div className="px-4 py-3 rounded-lg text-sm font-medium bg-green-50 text-green-700 border border-green-200">
           ✓ {state.message}
         </div>
       )}
-      {!readOnly && state?.error && (
+      {state?.error && (
         <div className="px-4 py-3 rounded-lg text-sm font-medium bg-red-50 text-red-700 border border-red-200">
           ⚠ {state.error}
         </div>
@@ -160,6 +168,7 @@ export function GradingForm({
       {/* Domain cards */}
       {domains.map((domain) => (
         <div key={domain.areaId} className={`bg-white rounded-xl border shadow-sm overflow-hidden ${completedSet.has(domain.areaId) ? "border-green-200" : "border-gray-200"}`}>
+          {/* Domain header */}
           <div className={`px-5 py-4 border-b flex items-center justify-between ${completedSet.has(domain.areaId) ? "bg-green-50 border-green-100" : "bg-indigo-50 border-indigo-100"}`}>
             <div>
               <h2 className="font-semibold text-gray-900">{domain.areaName}</h2>
@@ -169,7 +178,7 @@ export function GradingForm({
                   : "Enter score 0–10 per indicator → auto-mapped to P / C / B"}
               </p>
             </div>
-            {!domain.customScale && !readOnly && (
+            {!domain.customScale && (
               <MarkCompleteButton
                 studentId={studentId}
                 areaId={domain.areaId}
@@ -177,28 +186,71 @@ export function GradingForm({
                 isComplete={completedSet.has(domain.areaId)}
               />
             )}
-            {!domain.customScale && readOnly && completedSet.has(domain.areaId) && (
-              <span className="inline-flex items-center gap-1 text-xs text-green-600 font-medium">
-                ✓ Domain complete
-              </span>
-            )}
           </div>
 
-          {/* Narrative textarea — standard domains only */}
+          {/* Standard domains only: narrative + Contoh + score table */}
           {!domain.customScale && (
-            <div className="px-5 py-4 border-b border-gray-100 bg-gray-50">
-              <label className="block text-xs font-medium text-gray-600 mb-1.5">
-                Keterangan guru <span className="text-gray-400">(domain narrative for report card)</span>
-              </label>
-              <textarea
-                name={`narrative_${domain.areaId}`}
-                defaultValue={domain.narrative ?? ""}
-                rows={3}
-                placeholder="Describe the child's progress in this domain…"
-                disabled={readOnly}
-                className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-300 resize-none bg-white disabled:bg-gray-50 disabled:text-gray-500"
-              />
-            </div>
+            <>
+              {/* Keterangan guru */}
+              <div className="px-5 py-4 border-b border-gray-100 bg-gray-50">
+                <label className="block text-xs font-medium text-gray-600 mb-1.5">
+                  Keterangan guru <span className="text-gray-400">(domain narrative for report card)</span>
+                </label>
+                <textarea
+                  name={`narrative_${domain.areaId}`}
+                  defaultValue={domain.narrative ?? ""}
+                  rows={3}
+                  placeholder="Describe the child's progress in this domain…"
+                  className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-300 resize-none bg-white"
+                />
+              </div>
+
+              {/* Contoh — 2 mandatory observation slots */}
+              <div className="px-5 py-4 border-b border-amber-100 bg-amber-50/40 space-y-5">
+                <p className="text-xs font-semibold text-gray-700 uppercase tracking-wide">
+                  Contoh <span className="text-red-500">*</span>
+                  <span className="text-gray-400 font-normal normal-case ml-1">
+                    — kedua contoh wajib diisi sebelum domain dapat ditandai selesai
+                  </span>
+                </p>
+                {([1, 2] as const).map((slot) => {
+                  const existing = contohMap[domain.areaId]?.find((e) => e.slot === slot);
+                  return (
+                    <div key={slot} className="space-y-2">
+                      <p className="text-xs font-semibold text-amber-700">Contoh {slot}</p>
+                      <div className="flex gap-3">
+                        <div className="flex-1 min-w-0">
+                          <label className="block text-xs text-gray-500 mb-1">Tanggal</label>
+                          <input
+                            type="date"
+                            name={`contoh_${domain.areaId}_${slot}_date`}
+                            defaultValue={existing?.date ?? ""}
+                            className="w-full text-sm border border-gray-200 rounded-lg px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-indigo-300 bg-white"
+                          />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <label className="block text-xs text-gray-500 mb-1">Waktu / Sesi</label>
+                          <input
+                            type="text"
+                            name={`contoh_${domain.areaId}_${slot}_session`}
+                            defaultValue={existing?.session ?? ""}
+                            placeholder="e.g. Class Time, Snack Time"
+                            className="w-full text-sm border border-gray-200 rounded-lg px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-indigo-300 bg-white"
+                          />
+                        </div>
+                      </div>
+                      <textarea
+                        name={`contoh_${domain.areaId}_${slot}_text`}
+                        defaultValue={existing?.text ?? ""}
+                        rows={2}
+                        placeholder={`Tuliskan observasi untuk contoh ${slot}…`}
+                        className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-300 resize-none bg-white"
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+            </>
           )}
 
           {domain.customScale ? (
@@ -214,14 +266,13 @@ export function GradingForm({
                     </p>
                     <div className="flex flex-wrap gap-x-6 gap-y-1.5">
                       {levels.map((level) => (
-                        <label key={level.code} className={`flex items-center gap-2 ${readOnly ? "cursor-default" : "cursor-pointer"}`}>
+                        <label key={level.code} className="flex items-center gap-2 cursor-pointer">
                           <input
                             type="radio"
                             name={`english_${skill.id}`}
                             value={level.code}
                             defaultChecked={current === level.code}
-                            disabled={readOnly}
-                            className="accent-indigo-600 w-4 h-4 disabled:opacity-60"
+                            className="accent-indigo-600 w-4 h-4"
                           />
                           <span className="text-sm text-gray-700">
                             <span className="font-semibold text-indigo-700">{level.code}</span>
@@ -230,14 +281,13 @@ export function GradingForm({
                           </span>
                         </label>
                       ))}
-                      <label className={`flex items-center gap-2 ${readOnly ? "cursor-default" : "cursor-pointer"}`}>
+                      <label className="flex items-center gap-2 cursor-pointer">
                         <input
                           type="radio"
                           name={`english_${skill.id}`}
                           value=""
                           defaultChecked={!current}
-                          disabled={readOnly}
-                          className="accent-gray-400 w-4 h-4 disabled:opacity-60"
+                          className="accent-gray-400 w-4 h-4"
                         />
                         <span className="text-sm text-gray-400">Not yet assessed</span>
                       </label>
@@ -275,9 +325,7 @@ export function GradingForm({
                             max="10"
                             step="0.5"
                             defaultValue={entryMap[skill.id]?.score ?? ""}
-                            disabled={readOnly}
                             onChange={(e) => {
-                              if (readOnly) return;
                               const v = parseFloat(e.target.value);
                               if (!isNaN(v)) {
                                 const rounded = Math.round(Math.max(0, Math.min(10, v)) * 2) / 2;
@@ -285,7 +333,6 @@ export function GradingForm({
                               }
                             }}
                             onBlur={(e) => {
-                              if (readOnly) return;
                               const v = parseFloat(e.target.value);
                               if (!isNaN(v)) {
                                 const rounded = Math.round(Math.max(0, Math.min(10, v)) * 2) / 2;
@@ -293,7 +340,7 @@ export function GradingForm({
                                 setScorePreviews((prev) => ({ ...prev, [skill.id]: rounded }));
                               }
                             }}
-                            className="w-24 text-center border border-gray-200 rounded-lg px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300 mx-auto block disabled:bg-gray-50 disabled:text-gray-500"
+                            className="w-24 text-center border border-gray-200 rounded-lg px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300 mx-auto block"
                           />
                         </td>
                         <td className="px-3 py-2.5 text-center">
@@ -319,7 +366,7 @@ export function GradingForm({
       <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-5">
         <label className="block text-sm font-semibold text-gray-900 mb-1">
           Rangkuman Perkembangan Anak{" "}
-          {!readOnly && <span className="text-red-500">*</span>}
+          <span className="text-red-500">*</span>
         </label>
         <p className="text-xs text-gray-500 mb-3">
           Opening paragraph on the report card, written by the homeroom teacher.
@@ -329,34 +376,31 @@ export function GradingForm({
           defaultValue={overallComment}
           rows={5}
           placeholder="Tulis rangkuman perkembangan anak selama semester ini…"
-          disabled={readOnly}
-          className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-300 resize-none disabled:bg-gray-50 disabled:text-gray-500"
+          className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-300 resize-none"
         />
       </div>
 
-      {/* Buttons — hidden in read-only mode */}
-      {!readOnly && (
-        <div className="flex items-center gap-3 justify-end pb-8">
-          <button
-            type="submit"
-            name="_action"
-            value="draft"
-            disabled={isPending}
-            className="px-5 py-2.5 text-sm font-medium border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 disabled:opacity-50 transition-colors"
-          >
-            {isPending ? "Saving…" : "Save Draft"}
-          </button>
-          <button
-            type="submit"
-            name="_action"
-            value="publish"
-            disabled={isPending}
-            className="px-5 py-2.5 text-sm font-medium bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 transition-colors"
-          >
-            {isPending ? "Publishing…" : isPublished ? "Re-publish" : "Publish Report Card"}
-          </button>
-        </div>
-      )}
+      {/* Buttons */}
+      <div className="flex items-center gap-3 justify-end pb-8">
+        <button
+          type="submit"
+          name="_action"
+          value="draft"
+          disabled={isPending}
+          className="px-5 py-2.5 text-sm font-medium border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 disabled:opacity-50 transition-colors"
+        >
+          {isPending ? "Saving…" : "Save Draft"}
+        </button>
+        <button
+          type="submit"
+          name="_action"
+          value="publish"
+          disabled={isPending}
+          className="px-5 py-2.5 text-sm font-medium bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 transition-colors"
+        >
+          {isPending ? "Publishing…" : isPublished ? "Re-publish" : "Publish Report Card"}
+        </button>
+      </div>
 
       {/* Scale legend */}
       <div className="flex items-center gap-6 text-xs text-gray-500 pb-4">
