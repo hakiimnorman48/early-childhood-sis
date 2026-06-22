@@ -40,7 +40,7 @@ export default async function StudentsPage() {
     <div className="p-6 max-w-6xl mx-auto">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-xl font-bold text-gray-900">Students</h1>
+          <h1 className="text-xl font-bold text-ink">Students</h1>
           <p className="text-sm text-gray-500">{students.length} students enrolled</p>
         </div>
       </div>
@@ -49,13 +49,13 @@ export default async function StudentsPage() {
         {grouped.map(({ cls, students: classStudents }) => (
           <div key={cls.id}>
             <div className="flex items-center gap-3 mb-3">
-              <h2 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">{cls.name}</h2>
+              <h2 className="text-sm font-semibold text-gray-600 uppercase tracking-wide">{cls.name}</h2>
               <span className="text-xs text-gray-400">{classStudents.length} students</span>
             </div>
 
-            <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
               <table className="w-full text-sm">
-                <thead className="bg-gray-50 border-b border-gray-200">
+                <thead className="bg-surface border-b border-gray-100">
                   <tr>
                     <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Student</th>
                     <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Date of Birth</th>
@@ -76,15 +76,15 @@ export default async function StudentsPage() {
                     const parentLink = s.parentStudents[0];
                     const parent = parentLink?.parent ?? null;
                     return (
-                      <tr key={s.id} className="hover:bg-gray-50 transition-colors">
+                      <tr key={s.id} className="hover:bg-surface/40 transition-colors">
                         <td className="px-4 py-3">
                           <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 text-xs font-bold shrink-0">
+                            <div className="w-8 h-8 rounded-full bg-accent/10 flex items-center justify-center text-accent text-xs font-bold shrink-0">
                               {s.fullName.charAt(0)}
                             </div>
                             <div>
-                              <p className="font-medium text-gray-900">{s.fullName}</p>
-                              {s.nickname && <p className="text-xs text-gray-500">"{s.nickname}"</p>}
+                              <p className="font-medium text-ink">{s.fullName}</p>
+                              {s.nickname && <p className="text-xs text-gray-500">&ldquo;{s.nickname}&rdquo;</p>}
                             </div>
                           </div>
                         </td>
@@ -99,7 +99,7 @@ export default async function StudentsPage() {
                         <td className="px-4 py-3">
                           {parent ? (
                             <div>
-                              <p className="text-gray-800">{parent.name}</p>
+                              <p className="text-ink">{parent.name}</p>
                               <p className="text-xs text-gray-500">{parent.email}</p>
                               {parent.phone && <p className="text-xs text-gray-500">{parent.phone}</p>}
                               {parent.address && (
@@ -116,7 +116,7 @@ export default async function StudentsPage() {
                           <div className="flex items-center gap-3 justify-end">
                             <Link
                               href={`/admin/students/${s.id}`}
-                              className="text-xs text-gray-500 hover:text-gray-700 font-medium"
+                              className="text-xs text-accent hover:text-accent/80 font-medium"
                             >
                               View Grading
                             </Link>
@@ -151,7 +151,7 @@ export default async function StudentsPage() {
         ))}
 
         {students.length === 0 && (
-          <div className="bg-white rounded-xl border border-gray-200 p-10 text-center text-gray-400">
+          <div className="bg-white rounded-2xl border border-gray-100 p-10 text-center text-gray-400">
             No students enrolled yet.
           </div>
         )}

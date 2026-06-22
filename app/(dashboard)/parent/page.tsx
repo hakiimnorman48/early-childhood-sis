@@ -52,8 +52,8 @@ export default async function ParentDashboard() {
   if (parentStudents.length === 0) {
     return (
       <div className="p-6">
-        <h1 className="text-xl font-bold text-gray-900 mb-4">My Child</h1>
-        <div className="bg-gray-50 border border-dashed border-gray-300 rounded-xl p-10 text-center text-gray-400">
+        <h1 className="text-xl font-bold text-ink mb-4">My Child</h1>
+        <div className="bg-surface border border-dashed border-gray-300 rounded-2xl p-10 text-center text-gray-400">
           No children linked to your account. Please contact the school.
         </div>
       </div>
@@ -150,42 +150,42 @@ export default async function ParentDashboard() {
   return (
     <div className="p-6 max-w-4xl mx-auto">
       {/* Child header */}
-      <div className="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl p-5 text-white mb-6">
+      <div className="bg-gradient-to-r from-accent to-blue-600 rounded-2xl p-5 text-white mb-6">
         <div className="flex items-center gap-4">
           <div className="w-16 h-16 rounded-2xl bg-white/20 flex items-center justify-center text-3xl font-bold">
             {student.fullName.charAt(0)}
           </div>
           <div>
             <h1 className="text-xl font-bold">{student.fullName}</h1>
-            {student.nickname && <p className="text-indigo-200 text-sm">"{student.nickname}"</p>}
-            <p className="text-sm text-indigo-100 mt-1">
+            {student.nickname && <p className="text-white/70 text-sm">&ldquo;{student.nickname}&rdquo;</p>}
+            <p className="text-sm text-white/80 mt-1">
               {student.class.name} · {student.class.grade} · {ageYears} years old
             </p>
           </div>
           {overallAvg !== null && (
             <div className="ml-auto text-center">
               <p className="text-3xl font-bold">{overallAvg.toFixed(1)}</p>
-              <p className="text-xs text-indigo-200 mt-0.5">{scoreToCode(overallAvg)} — Overall</p>
+              <p className="text-xs text-white/70 mt-0.5">{scoreToCode(overallAvg)} — Overall</p>
             </div>
           )}
         </div>
         {activePeriod && (
-          <p className="mt-3 text-xs text-indigo-200">Period: {activePeriod.name}</p>
+          <p className="mt-3 text-xs text-white/70">Period: {activePeriod.name}</p>
         )}
       </div>
 
       {/* Report card download */}
       {hasPublishedReport && activePeriod && (
-        <div className="bg-white rounded-xl border border-indigo-200 shadow-sm p-4 mb-6 flex items-center justify-between">
+        <div className="bg-white rounded-2xl border border-accent/20 shadow-sm p-4 mb-6 flex items-center justify-between">
           <div>
-            <p className="text-sm font-semibold text-gray-800">Report Card Available</p>
+            <p className="text-sm font-semibold text-ink">Report Card Available</p>
             <p className="text-xs text-gray-500 mt-0.5">
               Published for {activePeriod.name}
             </p>
           </div>
           <Link
             href={`/parent/reports/view/${activePeriod.id}`}
-            className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+            className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium bg-accent text-white rounded-xl hover:bg-accent/90 transition-colors"
           >
             <FileText size={15} />
             View &amp; Print Report Card
@@ -195,16 +195,16 @@ export default async function ParentDashboard() {
 
       {/* Teacher's overall summary */}
       {summary?.overallComment && (
-        <div className="bg-white rounded-xl border border-indigo-100 shadow-sm p-5 mb-6">
-          <h2 className="font-semibold text-gray-800 mb-2 text-sm">Rangkuman Perkembangan Anak</h2>
-          <p className="text-gray-700 text-sm leading-relaxed italic">"{summary.overallComment}"</p>
+        <div className="bg-white rounded-2xl border border-accent/10 shadow-sm p-5 mb-6">
+          <h2 className="font-semibold text-ink mb-2 text-sm">Rangkuman Perkembangan Anak</h2>
+          <p className="text-gray-700 text-sm leading-relaxed italic">&ldquo;{summary.overallComment}&rdquo;</p>
         </div>
       )}
 
       {/* Competency overview circles */}
       {Object.keys(areaAverages).length > 0 ? (
-        <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-5 mb-6">
-          <h2 className="font-semibold text-gray-800 mb-4 text-sm">Ringkasan Area Perkembangan</h2>
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 mb-6">
+          <h2 className="font-semibold text-ink mb-4 text-sm">Ringkasan Area Perkembangan</h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6 justify-items-center">
             {Object.values(areaAverages).map((area) => {
               const code = scoreToCode(area.avg);
@@ -224,7 +224,7 @@ export default async function ParentDashboard() {
         </div>
       ) : (
         !hasPublishedReport && (
-          <div className="bg-gray-50 border border-dashed border-gray-300 rounded-xl p-8 text-center text-gray-400 mb-6">
+          <div className="bg-surface border border-dashed border-gray-300 rounded-2xl p-8 text-center text-gray-400 mb-6">
             {activePeriod
               ? "No published progress yet for this period. Check back after your teacher publishes the report."
               : "No active period. Contact your school."}
@@ -235,7 +235,7 @@ export default async function ParentDashboard() {
       {/* Per-domain detail with skills */}
       {standardDomains.length > 0 && summary && (
         <div className="space-y-4 mb-6">
-          <h2 className="font-semibold text-gray-800 text-sm">Detail Per Domain</h2>
+          <h2 className="font-semibold text-ink text-sm">Detail Per Domain</h2>
           {standardDomains.map((d, idx) => {
             const area = d.competencyArea;
             const narrative = domainNarrativeMap[d.competencyAreaId];
@@ -243,13 +243,13 @@ export default async function ParentDashboard() {
             if (gradedSkills.length === 0) return null;
 
             return (
-              <div key={d.id} className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-                <div className="px-5 py-3 bg-gray-50 border-b border-gray-100">
-                  <h3 className="font-semibold text-gray-800 text-sm">
+              <div key={d.id} className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+                <div className="px-5 py-3 bg-surface border-b border-gray-100">
+                  <h3 className="font-semibold text-ink text-sm">
                     {idx + 1}. {area.name}
                   </h3>
                   {narrative && (
-                    <p className="text-xs text-gray-600 mt-1 italic">"{narrative}"</p>
+                    <p className="text-xs text-gray-600 mt-1 italic">&ldquo;{narrative}&rdquo;</p>
                   )}
                 </div>
                 <div className="divide-y divide-gray-50">
@@ -279,9 +279,9 @@ export default async function ParentDashboard() {
 
           {/* English domain */}
           {englishDomain && (
-            <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-              <div className="px-5 py-3 bg-gray-50 border-b border-gray-100">
-                <h3 className="font-semibold text-gray-800 text-sm">
+            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+              <div className="px-5 py-3 bg-surface border-b border-gray-100">
+                <h3 className="font-semibold text-ink text-sm">
                   {standardDomains.length + 1}. {englishDomain.competencyArea.name}
                 </h3>
               </div>
@@ -296,7 +296,7 @@ export default async function ParentDashboard() {
                       <p className="text-sm text-gray-700 font-medium">{skill.name}</p>
                       {code && levelText ? (
                         <p className="text-xs text-gray-600 text-right">
-                          <span className="font-bold text-indigo-700">{code}</span>
+                          <span className="font-bold text-accent">{code}</span>
                           {" — "}
                           {levelText}
                         </p>
@@ -313,7 +313,7 @@ export default async function ParentDashboard() {
       )}
 
       {/* Scale legend */}
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-4 mb-6">
+      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 mb-6">
         <p className="text-xs font-semibold text-gray-500 mb-3 uppercase tracking-wide">Keterangan Nilai</p>
         <div className="grid grid-cols-3 gap-3">
           {[
@@ -321,7 +321,7 @@ export default async function ParentDashboard() {
             { range: "4–6", label: "C — Cukup", desc: "Mulai berkembang", cls: "border-yellow-200 bg-yellow-50 text-yellow-700" },
             { range: "7–10", label: "B — Baik", desc: "Berkembang dengan baik", cls: "border-green-200 bg-green-50 text-green-700" },
           ].map((item) => (
-            <div key={item.range} className={`rounded-lg border px-3 py-2 ${item.cls}`}>
+            <div key={item.range} className={`rounded-xl border px-3 py-2 ${item.cls}`}>
               <p className="font-bold text-sm">{item.range}</p>
               <p className="text-xs font-medium">{item.label}</p>
               <p className="text-xs opacity-70">{item.desc}</p>
@@ -331,8 +331,8 @@ export default async function ParentDashboard() {
       </div>
 
       {/* Attendance summary */}
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-5">
-        <h2 className="font-semibold text-gray-800 mb-4 text-sm">Kehadiran Periode Ini</h2>
+      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
+        <h2 className="font-semibold text-ink mb-4 text-sm">Kehadiran Periode Ini</h2>
         <div className="grid grid-cols-4 gap-3 text-center">
           {[
             { label: "Hadir", value: presentDays, cls: "bg-green-50 text-green-700" },

@@ -45,7 +45,7 @@ function Dialog({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40">
       <div className={`bg-white rounded-2xl shadow-xl w-full ${wide ? "max-w-lg" : "max-w-sm"}`}>
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
-          <h2 className="font-semibold text-gray-900">{title}</h2>
+          <h2 className="font-semibold text-ink">{title}</h2>
           <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
             <X size={18} />
           </button>
@@ -81,7 +81,7 @@ export function CreateClassButton() {
     <>
       <button
         onClick={() => { setOpen(true); setError(null); }}
-        className="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors"
+        className="bg-accent text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-accent/90 transition-colors"
       >
         + New Class
       </button>
@@ -89,7 +89,7 @@ export function CreateClassButton() {
       <Dialog open={open} onClose={() => setOpen(false)} title="New Class">
         <form ref={formRef} onSubmit={handleSubmit} className="p-6 space-y-4">
           {error && (
-            <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{error}</p>
+            <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-xl px-3 py-2">{error}</p>
           )}
           <div>
             <label className="block text-xs font-medium text-gray-600 mb-1">Class Name</label>
@@ -97,7 +97,7 @@ export function CreateClassButton() {
               name="name"
               required
               placeholder="e.g. TK B 1"
-              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300"
+              className="w-full bg-surface border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent/30"
             />
           </div>
           <div>
@@ -106,14 +106,14 @@ export function CreateClassButton() {
               name="grade"
               required
               placeholder="e.g. TK B"
-              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300"
+              className="w-full bg-surface border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent/30"
             />
           </div>
           <div className="flex justify-end gap-3 pt-2">
-            <button type="button" onClick={() => setOpen(false)} className="px-4 py-2 text-sm border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50">
+            <button type="button" onClick={() => setOpen(false)} className="px-4 py-2 text-sm border border-gray-200 rounded-xl text-gray-600 hover:bg-surface">
               Cancel
             </button>
-            <button type="submit" disabled={isPending} className="px-4 py-2 text-sm bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 transition-colors">
+            <button type="submit" disabled={isPending} className="px-4 py-2 text-sm bg-accent text-white rounded-xl hover:bg-accent/90 disabled:opacity-50 transition-colors">
               {isPending ? "Creating…" : "Create Class"}
             </button>
           </div>
@@ -146,7 +146,7 @@ export function EditClassButton({ cls }: { cls: ClassData }) {
     <>
       <button
         onClick={() => { setOpen(true); setError(null); }}
-        className="text-xs text-indigo-600 hover:text-indigo-800 font-medium"
+        className="text-xs text-accent hover:text-accent/80 font-medium"
       >
         Edit
       </button>
@@ -155,7 +155,7 @@ export function EditClassButton({ cls }: { cls: ClassData }) {
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
           <input type="hidden" name="classId" value={cls.id} />
           {error && (
-            <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{error}</p>
+            <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-xl px-3 py-2">{error}</p>
           )}
           <div>
             <label className="block text-xs font-medium text-gray-600 mb-1">Class Name</label>
@@ -163,7 +163,7 @@ export function EditClassButton({ cls }: { cls: ClassData }) {
               name="name"
               required
               defaultValue={cls.name}
-              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300"
+              className="w-full bg-surface border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent/30"
             />
           </div>
           <div>
@@ -172,14 +172,14 @@ export function EditClassButton({ cls }: { cls: ClassData }) {
               name="grade"
               required
               defaultValue={cls.grade}
-              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300"
+              className="w-full bg-surface border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent/30"
             />
           </div>
           <div className="flex justify-end gap-3 pt-2">
-            <button type="button" onClick={() => setOpen(false)} className="px-4 py-2 text-sm border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50">
+            <button type="button" onClick={() => setOpen(false)} className="px-4 py-2 text-sm border border-gray-200 rounded-xl text-gray-600 hover:bg-surface">
               Cancel
             </button>
-            <button type="submit" disabled={isPending} className="px-4 py-2 text-sm bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 transition-colors">
+            <button type="submit" disabled={isPending} className="px-4 py-2 text-sm bg-accent text-white rounded-xl hover:bg-accent/90 disabled:opacity-50 transition-colors">
               {isPending ? "Saving…" : "Save"}
             </button>
           </div>
@@ -285,7 +285,7 @@ export function ManageTeachersButton({
     <>
       <button
         onClick={() => { setOpen(true); setMode("list"); setError(null); setSuccessMsg(null); }}
-        className="text-xs text-indigo-600 hover:text-indigo-800 font-medium border border-indigo-200 px-3 py-1.5 rounded-lg hover:bg-indigo-50 transition-colors w-full text-center"
+        className="text-xs text-accent hover:text-accent/80 font-medium border border-accent/20 px-3 py-1.5 rounded-xl hover:bg-accent/10 transition-colors w-full text-center"
       >
         Manage Teachers
       </button>
@@ -298,16 +298,16 @@ export function ManageTeachersButton({
             </p>
           )}
           {!activePeriodId && (
-            <div className="text-xs text-yellow-700 bg-yellow-50 border border-yellow-200 rounded-lg p-3 mb-4">
+            <div className="text-xs text-yellow-700 bg-yellow-50 border border-yellow-200 rounded-xl p-3 mb-4">
               No active grading period. Domain assignments require an active period.
             </div>
           )}
 
           {error && (
-            <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2 mb-4">{error}</p>
+            <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-xl px-3 py-2 mb-4">{error}</p>
           )}
           {successMsg && (
-            <p className="text-sm text-green-600 bg-green-50 border border-green-200 rounded-lg px-3 py-2 mb-4">✓ {successMsg}</p>
+            <p className="text-sm text-green-600 bg-green-50 border border-green-200 rounded-xl px-3 py-2 mb-4">✓ {successMsg}</p>
           )}
 
           {mode === "list" ? (
@@ -317,15 +317,15 @@ export function ManageTeachersButton({
               ) : (
                 <div className="space-y-3 mb-4">
                   {assignments.map((a) => (
-                    <div key={a.teacherId} className="flex items-start justify-between gap-3 bg-gray-50 rounded-xl p-3">
+                    <div key={a.teacherId} className="flex items-start justify-between gap-3 bg-surface rounded-xl p-3">
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-gray-900">{a.teacherName}</p>
+                        <p className="text-sm font-medium text-ink">{a.teacherName}</p>
                         {a.areaNames.length > 0 ? (
                           <div className="flex flex-wrap gap-1 mt-1.5">
                             {a.areaNames.map((name) => (
                               <span
                                 key={name}
-                                className="px-1.5 py-0.5 bg-indigo-50 text-indigo-600 text-xs rounded border border-indigo-100"
+                                className="px-1.5 py-0.5 bg-accent/10 text-accent text-xs rounded-full border border-accent/10"
                               >
                                 {name}
                               </span>
@@ -340,7 +340,7 @@ export function ManageTeachersButton({
                           type="button"
                           disabled={isPending}
                           onClick={() => openEdit(a)}
-                          className="text-xs text-indigo-600 hover:text-indigo-800 font-medium disabled:opacity-50"
+                          className="text-xs text-accent hover:text-accent/80 font-medium disabled:opacity-50"
                         >
                           Edit
                         </button>
@@ -362,7 +362,7 @@ export function ManageTeachersButton({
                 <button
                   type="button"
                   onClick={openAdd}
-                  className="w-full py-2.5 border border-dashed border-indigo-300 text-indigo-600 text-sm rounded-xl hover:bg-indigo-50 transition-colors"
+                  className="w-full py-2.5 border border-dashed border-accent/30 text-accent text-sm rounded-xl hover:bg-accent/10 transition-colors"
                 >
                   + Assign Teacher
                 </button>
@@ -378,7 +378,7 @@ export function ManageTeachersButton({
                 <label className="block text-xs font-medium text-gray-600 mb-1.5">Teacher</label>
                 {editingTeacherId ? (
                   <div className="flex items-center gap-2">
-                    <p className="text-sm font-medium text-gray-900">
+                    <p className="text-sm font-medium text-ink">
                       {allTeachers.find((t) => t.id === editingTeacherId)?.name}
                     </p>
                     <span className="text-xs text-gray-400">— editing domains</span>
@@ -387,7 +387,7 @@ export function ManageTeachersButton({
                   <select
                     value={selectedTeacherId}
                     onChange={(e) => setSelectedTeacherId(e.target.value)}
-                    className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300"
+                    className="w-full bg-surface border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent/30"
                   >
                     <option value="">Select teacher…</option>
                     {unassignedTeachers.map((t) => (
@@ -409,7 +409,7 @@ export function ManageTeachersButton({
                         type="checkbox"
                         checked={selectedAreaIds.has(area.id)}
                         onChange={() => toggleArea(area.id)}
-                        className="accent-indigo-600 w-4 h-4 shrink-0"
+                        className="accent-[#036aff] w-4 h-4 shrink-0"
                       />
                       <span className="text-sm text-gray-700 group-hover:text-gray-900">{area.name}</span>
                     </label>
@@ -421,14 +421,14 @@ export function ManageTeachersButton({
                 <button
                   type="button"
                   onClick={() => { setMode("list"); setError(null); }}
-                  className="flex-1 py-2 text-sm border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50 transition-colors"
+                  className="flex-1 py-2 text-sm border border-gray-200 rounded-xl text-gray-600 hover:bg-surface transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isPending}
-                  className="flex-1 py-2 text-sm bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 transition-colors"
+                  className="flex-1 py-2 text-sm bg-accent text-white rounded-xl hover:bg-accent/90 disabled:opacity-50 transition-colors"
                 >
                   {isPending ? "Saving…" : editingTeacherId ? "Update Domains" : "Assign"}
                 </button>

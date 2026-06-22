@@ -41,7 +41,7 @@ export default async function ClassesPage() {
     <div className="p-6 max-w-4xl mx-auto">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-xl font-bold text-gray-900">Classes</h1>
+          <h1 className="text-xl font-bold text-ink">Classes</h1>
           <p className="text-sm text-gray-500">{classes.length} class groups</p>
         </div>
         <CreateClassButton />
@@ -62,17 +62,17 @@ export default async function ClassesPage() {
           });
 
           return (
-            <div key={cls.id} className="bg-white rounded-xl border border-gray-200 shadow-sm p-5">
+            <div key={cls.id} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
               <div className="flex items-start justify-between mb-3">
                 <div>
-                  <h3 className="font-semibold text-gray-900 text-base">{cls.name}</h3>
+                  <h3 className="font-semibold text-ink text-base">{cls.name}</h3>
                   <span className="inline-block mt-1 px-2 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-700">
                     {cls.grade}
                   </span>
                 </div>
                 <div className="flex items-center gap-3">
                   <div className="text-right">
-                    <p className="text-2xl font-bold text-indigo-600">{cls.students.length}</p>
+                    <p className="text-2xl font-bold text-accent">{cls.students.length}</p>
                     <p className="text-xs text-gray-400">students</p>
                   </div>
                   <EditClassButton cls={{ id: cls.id, name: cls.name, grade: cls.grade }} />
@@ -87,13 +87,13 @@ export default async function ClassesPage() {
                     <div key={a.teacherId} className="flex items-start gap-2">
                       <span className="text-xs font-medium text-gray-400 w-16 shrink-0 pt-0.5">Teacher</span>
                       <div>
-                        <span className="text-gray-800 font-medium text-sm">{a.teacherName}</span>
+                        <span className="text-ink font-medium text-sm">{a.teacherName}</span>
                         {a.areaNames.length > 0 ? (
                           <div className="flex flex-wrap gap-1 mt-1">
                             {a.areaNames.map((name) => (
                               <span
                                 key={name}
-                                className="px-1.5 py-0.5 bg-indigo-50 text-indigo-600 text-xs rounded border border-indigo-100"
+                                className="px-1.5 py-0.5 bg-accent/10 text-accent text-xs rounded-full border border-accent/10"
                               >
                                 {name}
                               </span>
@@ -122,7 +122,7 @@ export default async function ClassesPage() {
         })}
 
         {classes.length === 0 && (
-          <div className="col-span-2 bg-white rounded-xl border border-dashed border-gray-300 p-10 text-center text-gray-400">
+          <div className="col-span-2 bg-white rounded-2xl border border-dashed border-gray-200 p-10 text-center text-gray-400">
             No classes created yet.
           </div>
         )}

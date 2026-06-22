@@ -15,10 +15,10 @@ export default async function PeriodsPage() {
     <div className="p-6 max-w-4xl mx-auto">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-xl font-bold text-gray-900">Reporting Periods</h1>
+          <h1 className="text-xl font-bold text-ink">Reporting Periods</h1>
           <p className="text-sm text-gray-500">{periods.length} periods defined</p>
         </div>
-        <button className="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors">
+        <button className="bg-accent text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-accent/90 transition-colors">
           + New Period
         </button>
       </div>
@@ -27,13 +27,13 @@ export default async function PeriodsPage() {
         {periods.map((p) => (
           <div
             key={p.id}
-            className={`bg-white rounded-xl border shadow-sm p-4 flex items-center gap-4 ${
-              p.isActive ? "border-indigo-300 ring-1 ring-indigo-200" : "border-gray-200"
+            className={`bg-white rounded-2xl border shadow-sm p-4 flex items-center gap-4 ${
+              p.isActive ? "border-accent/30 ring-1 ring-accent/10" : "border-gray-100"
             }`}
           >
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-1">
-                <h3 className="font-semibold text-gray-900">{p.name}</h3>
+                <h3 className="font-semibold text-ink">{p.name}</h3>
                 {p.isActive && (
                   <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-green-100 text-green-700">
                     Active
@@ -50,14 +50,14 @@ export default async function PeriodsPage() {
               </div>
             </div>
             {!p.isActive && (
-              <button className="text-xs text-indigo-600 hover:text-indigo-800 font-medium">
+              <button className="text-xs text-accent hover:text-accent/80 font-medium">
                 Set Active
               </button>
             )}
           </div>
         ))}
         {periods.length === 0 && (
-          <div className="bg-white rounded-xl border border-dashed border-gray-300 p-10 text-center text-gray-400">
+          <div className="bg-white rounded-2xl border border-dashed border-gray-200 p-10 text-center text-gray-400">
             No reporting periods defined yet.
           </div>
         )}

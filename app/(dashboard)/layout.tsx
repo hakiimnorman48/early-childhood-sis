@@ -20,7 +20,7 @@ export default async function DashboardLayout({
   ]);
 
   return (
-    <div className="flex h-screen bg-gray-50 overflow-hidden print:block print:h-auto print:overflow-visible">
+    <div className="flex h-screen bg-gradient-to-br from-fuchsia-50/50 via-white to-sky-100/60 overflow-hidden print:block print:h-auto print:overflow-visible">
       <Sidebar
         role={user?.role ?? "admin"}
         userName={user?.name ?? ""}

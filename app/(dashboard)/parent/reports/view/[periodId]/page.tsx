@@ -82,8 +82,8 @@ export default async function ParentReportCardPage({
         <Link href="/parent/reports" className="inline-flex items-center gap-2 text-sm text-gray-500 mb-6">
           <ArrowLeft size={16} /> Back to Reports
         </Link>
-        <div className="bg-orange-50 border border-orange-200 rounded-xl p-6 text-orange-700 text-sm">
-          This report card has not been published yet. Your child's teacher will notify you when it is ready.
+        <div className="bg-orange-50 border border-orange-200 rounded-2xl p-6 text-orange-700 text-sm">
+          This report card has not been published yet. Your child&apos;s teacher will notify you when it is ready.
         </div>
       </div>
     );
@@ -141,10 +141,10 @@ export default async function ParentReportCardPage({
   return (
     <>
       {/* On-screen controls */}
-      <div className="print:hidden px-6 py-4 border-b border-gray-200 bg-white flex items-center justify-between sticky top-0 z-10">
+      <div className="print:hidden px-6 py-4 border-b border-gray-100 bg-white flex items-center justify-between sticky top-0 z-10">
         <Link
           href="/parent/reports"
-          className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-gray-700"
+          className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-accent transition-colors"
         >
           <ArrowLeft size={16} /> Back to Reports
         </Link>

@@ -47,14 +47,14 @@ export default async function AttendancePage() {
     <div className="p-6 max-w-5xl mx-auto">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-xl font-bold text-gray-900">Attendance</h1>
+          <h1 className="text-xl font-bold text-ink">Attendance</h1>
           <p className="text-sm text-gray-500">
             {activePeriod ? `Period: ${activePeriod.name}` : "No active period"}
             {" · "}Today: {formatDate(today)}
           </p>
         </div>
-        <button className="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors">
-          Take Today's Attendance
+        <button className="bg-accent text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-accent/90 transition-colors">
+          Take Today&apos;s Attendance
         </button>
       </div>
 
@@ -70,11 +70,11 @@ export default async function AttendancePage() {
         }
 
         return (
-          <div key={cls.id} className="bg-white rounded-xl border border-gray-200 shadow-sm mb-6">
+          <div key={cls.id} className="bg-white rounded-2xl border border-gray-100 shadow-sm mb-6">
             <div className="px-5 py-4 border-b border-gray-100">
               <div className="flex items-center justify-between">
                 <div>
-                  <h2 className="font-semibold text-gray-900">{cls.name}</h2>
+                  <h2 className="font-semibold text-ink">{cls.name}</h2>
                   <p className="text-xs text-gray-400">{students.length} students</p>
                 </div>
                 <div className="flex items-center gap-3 text-xs">
@@ -91,7 +91,7 @@ export default async function AttendancePage() {
             </div>
 
             <table className="w-full text-sm">
-              <thead className="bg-gray-50 border-b border-gray-100">
+              <thead className="bg-surface border-b border-gray-100">
                 <tr>
                   <th className="text-left px-4 py-2 text-xs font-semibold text-gray-500">Student</th>
                   <th className="text-center px-3 py-2 text-xs font-semibold text-gray-500">Today</th>
@@ -115,13 +115,13 @@ export default async function AttendancePage() {
                   };
 
                   return (
-                    <tr key={s.id} className="hover:bg-gray-50">
+                    <tr key={s.id} className="hover:bg-surface/40">
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-2">
-                          <div className="w-7 h-7 rounded-full bg-indigo-50 text-indigo-700 text-xs font-bold flex items-center justify-center shrink-0">
+                          <div className="w-7 h-7 rounded-full bg-accent/10 text-accent text-xs font-bold flex items-center justify-center shrink-0">
                             {s.fullName.charAt(0)}
                           </div>
-                          <span className="font-medium text-gray-800">{s.fullName}</span>
+                          <span className="font-medium text-ink">{s.fullName}</span>
                         </div>
                       </td>
                       <td className="text-center px-3 py-3">

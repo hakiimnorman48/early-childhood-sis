@@ -5,7 +5,7 @@ import { CreateAccountButton, EditAccountButton } from "./accounts-client";
 
 const roleBadge: Record<string, string> = {
   admin: "bg-purple-100 text-purple-700",
-  teacher: "bg-indigo-100 text-indigo-700",
+  teacher: "bg-accent/10 text-accent",
   parent: "bg-teal-100 text-teal-700",
 };
 
@@ -50,15 +50,15 @@ export default async function AccountsPage() {
     <div className="p-6 max-w-4xl mx-auto">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-xl font-bold text-gray-900">User Accounts</h1>
+          <h1 className="text-xl font-bold text-ink">User Accounts</h1>
           <p className="text-sm text-gray-500">{users.length} accounts</p>
         </div>
         <CreateAccountButton />
       </div>
 
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
         <table className="w-full text-sm">
-          <thead className="bg-gray-50 border-b border-gray-200">
+          <thead className="bg-surface border-b border-gray-100">
             <tr>
               <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Name</th>
               <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Email</th>
@@ -81,14 +81,14 @@ export default async function AccountsPage() {
               });
 
               return (
-                <tr key={u.id} className="hover:bg-gray-50 transition-colors">
+                <tr key={u.id} className="hover:bg-surface/40 transition-colors">
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 text-xs font-bold shrink-0">
                         {u.name.charAt(0)}
                       </div>
                       <div>
-                        <span className="font-medium text-gray-900 block">{u.name}</span>
+                        <span className="font-medium text-ink block">{u.name}</span>
                         {u.role === "teacher" && teacherAssignments.length > 0 && (
                           <span className="text-xs text-gray-400">
                             {teacherAssignments.map((a) => a.className).join(", ")}

@@ -63,32 +63,34 @@ export function Sidebar({ role, userName, schoolName }: SidebarProps) {
   const roleLabel =
     role === "admin" ? "Administrator" : role === "teacher" ? "Teacher" : "Parent";
 
-  const roleColor =
+  const roleBadgeColor =
     role === "admin"
-      ? "bg-purple-600"
+      ? "bg-purple-100 text-purple-700"
       : role === "teacher"
-      ? "bg-indigo-600"
-      : "bg-teal-600";
+      ? "bg-accent/10 text-accent"
+      : "bg-teal-100 text-teal-700";
 
   return (
-    <aside className="flex flex-col w-60 min-h-screen bg-gray-900 text-white shrink-0 print:hidden">
+    <aside className="flex flex-col w-60 min-h-screen bg-white border-r border-gray-100 text-ink shrink-0 print:hidden">
       {/* Header */}
-      <div className="px-4 py-5 border-b border-gray-700">
+      <div className="px-4 py-5 border-b border-gray-100">
         <div className="flex items-center gap-3">
-          <div className={cn("w-9 h-9 rounded-lg flex items-center justify-center font-bold text-sm", roleColor)}>
+          <div className="w-9 h-9 rounded-xl bg-accent flex items-center justify-center font-bold text-sm text-white shrink-0">
             {schoolName.charAt(0)}
           </div>
           <div className="overflow-hidden">
-            <p className="font-semibold text-sm truncate">{schoolName}</p>
+            <p className="font-semibold text-sm text-ink truncate">{schoolName}</p>
             <p className="text-xs text-gray-400">Early Childhood SIS</p>
           </div>
         </div>
       </div>
 
       {/* User */}
-      <div className="px-4 py-3 border-b border-gray-700">
-        <p className="text-xs text-gray-400 uppercase tracking-wide mb-1">{roleLabel}</p>
-        <p className="text-sm font-medium truncate">{userName}</p>
+      <div className="px-4 py-3 border-b border-gray-100">
+        <span className={cn("inline-block text-xs font-medium px-2.5 py-0.5 rounded-full mb-1.5", roleBadgeColor)}>
+          {roleLabel}
+        </span>
+        <p className="text-sm font-semibold text-ink truncate">{userName}</p>
       </div>
 
       {/* Nav */}
@@ -103,10 +105,10 @@ export function Sidebar({ role, userName, schoolName }: SidebarProps) {
               key={item.href}
               href={item.href}
               className={cn(
-                "flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors",
+                "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors",
                 isActive
-                  ? "bg-white/10 text-white font-medium"
-                  : "text-gray-300 hover:bg-white/5 hover:text-white"
+                  ? "bg-accent text-white"
+                  : "text-gray-500 hover:bg-surface hover:text-ink"
               )}
             >
               {item.icon}
@@ -117,10 +119,10 @@ export function Sidebar({ role, userName, schoolName }: SidebarProps) {
       </nav>
 
       {/* Sign out */}
-      <div className="px-3 py-4 border-t border-gray-700">
+      <div className="px-3 py-4 border-t border-gray-100">
         <button
           onClick={() => signOut({ callbackUrl: "/login" })}
-          className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-gray-300 hover:bg-white/5 hover:text-white w-full transition-colors"
+          className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-500 hover:bg-surface hover:text-ink w-full transition-colors"
         >
           <LogOut size={18} />
           Sign out

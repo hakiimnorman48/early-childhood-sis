@@ -43,7 +43,7 @@ function Dialog({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40">
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg">
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
-          <h2 className="font-semibold text-gray-900">{title}</h2>
+          <h2 className="font-semibold text-ink">{title}</h2>
           <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
             <X size={18} />
           </button>
@@ -79,7 +79,7 @@ export function CreateAccountButton() {
     <>
       <button
         onClick={() => { setOpen(true); setError(null); }}
-        className="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors"
+        className="bg-accent text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-accent/90 transition-colors"
       >
         + Create Account
       </button>
@@ -87,23 +87,23 @@ export function CreateAccountButton() {
       <Dialog open={open} onClose={() => setOpen(false)} title="Create Account">
         <form ref={formRef} onSubmit={handleSubmit} className="p-6 space-y-4">
           {error && (
-            <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{error}</p>
+            <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-xl px-3 py-2">{error}</p>
           )}
           <div>
             <label className="block text-xs font-medium text-gray-600 mb-1">Full Name</label>
-            <input name="name" required className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300" />
+            <input name="name" required className="w-full bg-surface border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent/30" />
           </div>
           <div>
             <label className="block text-xs font-medium text-gray-600 mb-1">Email</label>
-            <input name="email" type="email" required className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300" />
+            <input name="email" type="email" required className="w-full bg-surface border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent/30" />
           </div>
           <div>
             <label className="block text-xs font-medium text-gray-600 mb-1">Password</label>
-            <input name="password" type="password" required minLength={6} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300" />
+            <input name="password" type="password" required minLength={6} className="w-full bg-surface border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent/30" />
           </div>
           <div>
             <label className="block text-xs font-medium text-gray-600 mb-1">Role</label>
-            <select name="role" required className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300">
+            <select name="role" required className="w-full bg-surface border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent/30">
               <option value="">Select role…</option>
               <option value="teacher">Teacher</option>
               <option value="parent">Parent</option>
@@ -111,10 +111,10 @@ export function CreateAccountButton() {
             </select>
           </div>
           <div className="flex justify-end gap-3 pt-2">
-            <button type="button" onClick={() => setOpen(false)} className="px-4 py-2 text-sm border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50">
+            <button type="button" onClick={() => setOpen(false)} className="px-4 py-2 text-sm border border-gray-200 rounded-xl text-gray-600 hover:bg-surface">
               Cancel
             </button>
-            <button type="submit" disabled={isPending} className="px-4 py-2 text-sm bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 transition-colors">
+            <button type="submit" disabled={isPending} className="px-4 py-2 text-sm bg-accent text-white rounded-xl hover:bg-accent/90 disabled:opacity-50 transition-colors">
               {isPending ? "Creating…" : "Create Account"}
             </button>
           </div>
@@ -238,7 +238,7 @@ export function EditAccountButton({
     <>
       <button
         onClick={() => { setOpen(true); setTab("account"); setAccountError(null); }}
-        className="text-xs text-indigo-600 hover:text-indigo-800 font-medium"
+        className="text-xs text-accent hover:text-accent/80 font-medium"
       >
         Edit
       </button>
@@ -254,7 +254,7 @@ export function EditAccountButton({
                 onClick={() => setTab(t)}
                 className={`flex-1 py-2.5 text-sm font-medium transition-colors capitalize ${
                   tab === t
-                    ? "text-indigo-600 border-b-2 border-indigo-600"
+                    ? "text-accent border-b-2 border-accent"
                     : "text-gray-500 hover:text-gray-700"
                 }`}
               >
@@ -270,19 +270,19 @@ export function EditAccountButton({
             <form onSubmit={handleAccountSubmit} className="p-6 space-y-4">
               <input type="hidden" name="userId" value={user.id} />
               {accountError && (
-                <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{accountError}</p>
+                <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-xl px-3 py-2">{accountError}</p>
               )}
               <div>
                 <label className="block text-xs font-medium text-gray-600 mb-1">Full Name</label>
-                <input name="name" required defaultValue={user.name} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300" />
+                <input name="name" required defaultValue={user.name} className="w-full bg-surface border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent/30" />
               </div>
               <div>
                 <label className="block text-xs font-medium text-gray-600 mb-1">Email</label>
-                <input name="email" type="email" required defaultValue={user.email} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300" />
+                <input name="email" type="email" required defaultValue={user.email} className="w-full bg-surface border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent/30" />
               </div>
               <div>
                 <label className="block text-xs font-medium text-gray-600 mb-1">Role</label>
-                <select name="role" required defaultValue={user.role} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300">
+                <select name="role" required defaultValue={user.role} className="w-full bg-surface border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent/30">
                   <option value="teacher">Teacher</option>
                   <option value="parent">Parent</option>
                   <option value="admin">Admin</option>
@@ -290,7 +290,7 @@ export function EditAccountButton({
               </div>
               <div>
                 <label className="block text-xs font-medium text-gray-600 mb-1">Status</label>
-                <select name="isActive" defaultValue={user.isActive ? "true" : "false"} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300">
+                <select name="isActive" defaultValue={user.isActive ? "true" : "false"} className="w-full bg-surface border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent/30">
                   <option value="true">Active</option>
                   <option value="false">Inactive</option>
                 </select>
@@ -299,13 +299,13 @@ export function EditAccountButton({
                 <label className="block text-xs font-medium text-gray-600 mb-1">
                   New Password <span className="text-gray-400">(leave blank to keep current)</span>
                 </label>
-                <input name="newPassword" type="password" minLength={6} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300" />
+                <input name="newPassword" type="password" minLength={6} className="w-full bg-surface border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent/30" />
               </div>
               <div className="flex justify-end gap-3 pt-2">
-                <button type="button" onClick={handleClose} className="px-4 py-2 text-sm border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50">
+                <button type="button" onClick={handleClose} className="px-4 py-2 text-sm border border-gray-200 rounded-xl text-gray-600 hover:bg-surface">
                   Cancel
                 </button>
-                <button type="submit" disabled={isAccountPending} className="px-4 py-2 text-sm bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 transition-colors">
+                <button type="submit" disabled={isAccountPending} className="px-4 py-2 text-sm bg-accent text-white rounded-xl hover:bg-accent/90 disabled:opacity-50 transition-colors">
                   {isAccountPending ? "Saving…" : "Save Changes"}
                 </button>
               </div>
@@ -316,16 +316,16 @@ export function EditAccountButton({
           {tab === "assignments" && isTeacher && (
             <div className="p-6">
               {!teacherData?.activePeriodId && (
-                <div className="text-xs text-yellow-700 bg-yellow-50 border border-yellow-200 rounded-lg p-3 mb-4">
+                <div className="text-xs text-yellow-700 bg-yellow-50 border border-yellow-200 rounded-xl p-3 mb-4">
                   No active grading period. Assignments require an active period.
                 </div>
               )}
 
               {assignError && (
-                <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2 mb-4">{assignError}</p>
+                <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-xl px-3 py-2 mb-4">{assignError}</p>
               )}
               {assignSuccess && (
-                <p className="text-sm text-green-600 bg-green-50 border border-green-200 rounded-lg px-3 py-2 mb-4">✓ {assignSuccess}</p>
+                <p className="text-sm text-green-600 bg-green-50 border border-green-200 rounded-xl px-3 py-2 mb-4">✓ {assignSuccess}</p>
               )}
 
               {assignMode === "list" ? (
@@ -335,15 +335,15 @@ export function EditAccountButton({
                   ) : (
                     <div className="space-y-3 mb-4">
                       {assignments.map((a) => (
-                        <div key={a.classId} className="flex items-start justify-between gap-3 bg-gray-50 rounded-xl p-3">
+                        <div key={a.classId} className="flex items-start justify-between gap-3 bg-surface rounded-xl p-3">
                           <div className="flex-1 min-w-0">
-                            <p className="text-sm font-medium text-gray-900">{a.className}</p>
+                            <p className="text-sm font-medium text-ink">{a.className}</p>
                             {a.areaNames.length > 0 ? (
                               <div className="flex flex-wrap gap-1 mt-1.5">
                                 {a.areaNames.map((name) => (
                                   <span
                                     key={name}
-                                    className="px-1.5 py-0.5 bg-indigo-50 text-indigo-600 text-xs rounded border border-indigo-100"
+                                    className="px-1.5 py-0.5 bg-accent/10 text-accent text-xs rounded-full border border-accent/10"
                                   >
                                     {name}
                                   </span>
@@ -358,7 +358,7 @@ export function EditAccountButton({
                               type="button"
                               disabled={isAssignPending}
                               onClick={() => openEditAssignment(a)}
-                              className="text-xs text-indigo-600 hover:text-indigo-800 font-medium disabled:opacity-50"
+                              className="text-xs text-accent hover:text-accent/80 font-medium disabled:opacity-50"
                             >
                               Edit
                             </button>
@@ -380,7 +380,7 @@ export function EditAccountButton({
                     <button
                       type="button"
                       onClick={openAddAssignment}
-                      className="w-full py-2.5 border border-dashed border-indigo-300 text-indigo-600 text-sm rounded-xl hover:bg-indigo-50 transition-colors"
+                      className="w-full py-2.5 border border-dashed border-accent/30 text-accent text-sm rounded-xl hover:bg-accent/10 transition-colors"
                     >
                       + Assign to Class
                     </button>
@@ -398,7 +398,7 @@ export function EditAccountButton({
                     <label className="block text-xs font-medium text-gray-600 mb-1.5">Class</label>
                     {editingClassId ? (
                       <div className="flex items-center gap-2">
-                        <p className="text-sm font-medium text-gray-900">
+                        <p className="text-sm font-medium text-ink">
                           {assignments.find((a) => a.classId === editingClassId)?.className ?? editingClassId}
                         </p>
                         <span className="text-xs text-gray-400">— editing domains</span>
@@ -407,7 +407,7 @@ export function EditAccountButton({
                       <select
                         value={selectedClassId}
                         onChange={(e) => setSelectedClassId(e.target.value)}
-                        className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300"
+                        className="w-full bg-surface border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent/30"
                       >
                         <option value="">Select class…</option>
                         {unassignedClasses.map((c) => (
@@ -429,7 +429,7 @@ export function EditAccountButton({
                             type="checkbox"
                             checked={selectedAreaIds.has(area.id)}
                             onChange={() => toggleArea(area.id)}
-                            className="accent-indigo-600 w-4 h-4 shrink-0"
+                            className="accent-[#036aff] w-4 h-4 shrink-0"
                           />
                           <span className="text-sm text-gray-700 group-hover:text-gray-900">{area.name}</span>
                         </label>
@@ -441,14 +441,14 @@ export function EditAccountButton({
                     <button
                       type="button"
                       onClick={() => { setAssignMode("list"); setAssignError(null); }}
-                      className="flex-1 py-2 text-sm border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50 transition-colors"
+                      className="flex-1 py-2 text-sm border border-gray-200 rounded-xl text-gray-600 hover:bg-surface transition-colors"
                     >
                       Cancel
                     </button>
                     <button
                       type="submit"
                       disabled={isAssignPending}
-                      className="flex-1 py-2 text-sm bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 transition-colors"
+                      className="flex-1 py-2 text-sm bg-accent text-white rounded-xl hover:bg-accent/90 disabled:opacity-50 transition-colors"
                     >
                       {isAssignPending ? "Saving…" : editingClassId ? "Update Domains" : "Assign"}
                     </button>

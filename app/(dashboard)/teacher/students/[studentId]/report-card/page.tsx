@@ -141,10 +141,10 @@ export default async function ReportCardPage({
   return (
     <>
       {/* On-screen controls — hidden when printing */}
-      <div className="print:hidden px-6 py-4 border-b border-gray-200 bg-white flex items-center justify-between sticky top-0 z-10">
+      <div className="print:hidden px-6 py-4 border-b border-gray-100 bg-white flex items-center justify-between sticky top-0 z-10">
         <Link
           href={`/teacher/students/${studentId}`}
-          className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-gray-700"
+          className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-accent transition-colors"
         >
           <ArrowLeft size={16} /> Back to Grading
         </Link>

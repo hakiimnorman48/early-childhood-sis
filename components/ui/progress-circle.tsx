@@ -19,7 +19,7 @@ const colorMap: Record<string, { stroke: string; fill: string; bg: string }> = {
   red: { stroke: "#ef4444", fill: "#fef2f2", bg: "bg-red-50" },
   yellow: { stroke: "#f59e0b", fill: "#fffbeb", bg: "bg-yellow-50" },
   green: { stroke: "#22c55e", fill: "#f0fdf4", bg: "bg-green-50" },
-  blue: { stroke: "#3b82f6", fill: "#eff6ff", bg: "bg-blue-50" },
+  blue: { stroke: "#036aff", fill: "#eff6ff", bg: "bg-blue-50" },
 };
 
 export function ProgressCircle({

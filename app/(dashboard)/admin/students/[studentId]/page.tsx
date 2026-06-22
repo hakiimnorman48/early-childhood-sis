@@ -37,7 +37,7 @@ export default async function AdminStudentGradingPage({
         <Link href="/admin/students" className="inline-flex items-center gap-2 text-sm text-gray-500 mb-6">
           <ArrowLeft size={16} /> Back to Students
         </Link>
-        <div className="bg-orange-50 border border-orange-200 rounded-xl p-6 text-orange-700 text-sm">
+        <div className="bg-orange-50 border border-orange-200 rounded-2xl p-6 text-orange-700 text-sm">
           No active grading period. Go to Grading Periods and activate one first.
         </div>
       </div>
@@ -102,7 +102,7 @@ export default async function AdminStudentGradingPage({
         </Link>
         <Link
           href={`/teacher/students/${studentId}/report-card`}
-          className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium bg-gray-900 text-white rounded-lg hover:bg-gray-700 transition-colors"
+          className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium border border-accent text-accent rounded-xl hover:bg-accent/10 transition-colors"
         >
           <FileText size={16} />
           Preview &amp; Export Report Card
@@ -110,13 +110,13 @@ export default async function AdminStudentGradingPage({
       </div>
 
       {/* Student card */}
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-5 mb-6">
+      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 mb-6">
         <div className="flex items-start justify-between">
           <div>
-            <h1 className="text-xl font-bold text-gray-900">{student.fullName}</h1>
+            <h1 className="text-xl font-bold text-ink">{student.fullName}</h1>
             <p className="text-sm text-gray-500 mt-0.5">
               {student.class.name} · Period:{" "}
-              <span className="text-indigo-600 font-medium">{activePeriod.name}</span>
+              <span className="text-accent font-medium">{activePeriod.name}</span>
             </p>
             <p className="text-xs text-gray-400 mt-1">
               PIC Teacher:{" "}
@@ -155,7 +155,7 @@ export default async function AdminStudentGradingPage({
           contohMap={contohMap}
         />
       ) : (
-        <div className="bg-gray-50 border border-dashed border-gray-300 rounded-xl p-10 text-center text-gray-400">
+        <div className="bg-surface border border-dashed border-gray-300 rounded-2xl p-10 text-center text-gray-400">
           No domain assignments found for this class and period.
         </div>
       )}

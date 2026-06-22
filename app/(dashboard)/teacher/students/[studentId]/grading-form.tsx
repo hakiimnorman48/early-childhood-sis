@@ -109,7 +109,7 @@ function MarkCompleteButton({
             else if (result?.error) setErrorMsg(result.error);
           });
         }}
-        className="text-xs text-indigo-600 hover:text-indigo-800 font-medium border border-indigo-200 px-3 py-1 rounded-lg hover:bg-indigo-50 transition-colors disabled:opacity-50"
+        className="text-xs text-accent hover:text-accent/80 font-medium border border-accent/20 px-3 py-1 rounded-xl hover:bg-accent/10 transition-colors disabled:opacity-50"
       >
         {isPending ? "Saving…" : "Mark Domain Complete & Save Draft"}
       </button>
@@ -155,23 +155,23 @@ export function GradingForm({
 
       {/* Status banner */}
       {state?.message && (
-        <div className="px-4 py-3 rounded-lg text-sm font-medium bg-green-50 text-green-700 border border-green-200">
+        <div className="px-4 py-3 rounded-xl text-sm font-medium bg-green-50 text-green-700 border border-green-200">
           ✓ {state.message}
         </div>
       )}
       {state?.error && (
-        <div className="px-4 py-3 rounded-lg text-sm font-medium bg-red-50 text-red-700 border border-red-200">
+        <div className="px-4 py-3 rounded-xl text-sm font-medium bg-red-50 text-red-700 border border-red-200">
           ⚠ {state.error}
         </div>
       )}
 
       {/* Domain cards */}
       {domains.map((domain) => (
-        <div key={domain.areaId} className={`bg-white rounded-xl border shadow-sm overflow-hidden ${completedSet.has(domain.areaId) ? "border-green-200" : "border-gray-200"}`}>
+        <div key={domain.areaId} className={`bg-white rounded-2xl border shadow-sm overflow-hidden ${completedSet.has(domain.areaId) ? "border-green-200" : "border-gray-100"}`}>
           {/* Domain header */}
-          <div className={`px-5 py-4 border-b flex items-center justify-between ${completedSet.has(domain.areaId) ? "bg-green-50 border-green-100" : "bg-indigo-50 border-indigo-100"}`}>
+          <div className={`px-5 py-4 border-b flex items-center justify-between ${completedSet.has(domain.areaId) ? "bg-green-50 border-green-100" : "bg-accent/10 border-accent/10"}`}>
             <div>
-              <h2 className="font-semibold text-gray-900">{domain.areaName}</h2>
+              <h2 className="font-semibold text-ink">{domain.areaName}</h2>
               <p className="text-xs text-gray-500 mt-0.5">
                 {domain.customScale
                   ? "English scale — select highest level reached per skill"
@@ -192,7 +192,7 @@ export function GradingForm({
           {!domain.customScale && (
             <>
               {/* Keterangan guru */}
-              <div className="px-5 py-4 border-b border-gray-100 bg-gray-50">
+              <div className="px-5 py-4 border-b border-gray-100 bg-surface/60">
                 <label className="block text-xs font-medium text-gray-600 mb-1.5">
                   Keterangan guru <span className="text-gray-400">(domain narrative for report card)</span>
                 </label>
@@ -201,7 +201,7 @@ export function GradingForm({
                   defaultValue={domain.narrative ?? ""}
                   rows={3}
                   placeholder="Describe the child's progress in this domain…"
-                  className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-300 resize-none bg-white"
+                  className="w-full text-sm border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent/30 resize-none bg-white"
                 />
               </div>
 
@@ -225,7 +225,7 @@ export function GradingForm({
                             type="date"
                             name={`contoh_${domain.areaId}_${slot}_date`}
                             defaultValue={existing?.date ?? ""}
-                            className="w-full text-sm border border-gray-200 rounded-lg px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-indigo-300 bg-white"
+                            className="w-full text-sm bg-surface border border-gray-200 rounded-xl px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-accent/30"
                           />
                         </div>
                         <div className="flex-1 min-w-0">
@@ -235,7 +235,7 @@ export function GradingForm({
                             name={`contoh_${domain.areaId}_${slot}_session`}
                             defaultValue={existing?.session ?? ""}
                             placeholder="e.g. Class Time, Snack Time"
-                            className="w-full text-sm border border-gray-200 rounded-lg px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-indigo-300 bg-white"
+                            className="w-full text-sm bg-surface border border-gray-200 rounded-xl px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-accent/30"
                           />
                         </div>
                       </div>
@@ -244,7 +244,7 @@ export function GradingForm({
                         defaultValue={existing?.text ?? ""}
                         rows={2}
                         placeholder={`Tuliskan observasi untuk contoh ${slot}…`}
-                        className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-300 resize-none bg-white"
+                        className="w-full text-sm bg-surface border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent/30 resize-none"
                       />
                     </div>
                   );
@@ -261,7 +261,7 @@ export function GradingForm({
                 const current = entryMap[skill.id]?.mappedCode ?? "";
                 return (
                   <div key={skill.id}>
-                    <p className="text-sm font-medium text-gray-800 mb-2">
+                    <p className="text-sm font-medium text-ink mb-2">
                       {skill.order}. {skill.name}
                     </p>
                     <div className="flex flex-wrap gap-x-6 gap-y-1.5">
@@ -272,10 +272,10 @@ export function GradingForm({
                             name={`english_${skill.id}`}
                             value={level.code}
                             defaultChecked={current === level.code}
-                            className="accent-indigo-600 w-4 h-4"
+                            className="accent-[#036aff] w-4 h-4"
                           />
                           <span className="text-sm text-gray-700">
-                            <span className="font-semibold text-indigo-700">{level.code}</span>
+                            <span className="font-semibold text-accent">{level.code}</span>
                             {" — "}
                             {level.text}
                           </span>
@@ -300,7 +300,7 @@ export function GradingForm({
             /* ── Numeric score table ── */
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
-                <thead className="bg-gray-50 border-b border-gray-200">
+                <thead className="bg-surface border-b border-gray-100">
                   <tr>
                     <th className="text-left px-4 py-2.5 font-medium text-gray-500 w-10">#</th>
                     <th className="text-left px-3 py-2.5 font-medium text-gray-500">Indikator</th>
@@ -313,7 +313,7 @@ export function GradingForm({
                     const preview = scorePreviews[skill.id];
                     const pcb = preview !== undefined ? pcbFromScore(preview) : null;
                     return (
-                      <tr key={skill.id} className="hover:bg-gray-50/70">
+                      <tr key={skill.id} className="hover:bg-surface/40">
                         <td className="px-4 py-2.5 text-gray-400 text-xs">{skill.order}</td>
                         <td className="px-3 py-2.5 text-gray-700">{skill.name}</td>
                         <td className="px-3 py-2.5">
@@ -340,7 +340,7 @@ export function GradingForm({
                                 setScorePreviews((prev) => ({ ...prev, [skill.id]: rounded }));
                               }
                             }}
-                            className="w-24 text-center border border-gray-200 rounded-lg px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300 mx-auto block"
+                            className="w-24 text-center bg-surface border border-gray-200 rounded-xl px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-accent/30 mx-auto block"
                           />
                         </td>
                         <td className="px-3 py-2.5 text-center">
@@ -363,8 +363,8 @@ export function GradingForm({
       ))}
 
       {/* Overall comment */}
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-5">
-        <label className="block text-sm font-semibold text-gray-900 mb-1">
+      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
+        <label className="block text-sm font-semibold text-ink mb-1">
           Rangkuman Perkembangan Anak{" "}
           <span className="text-red-500">*</span>
         </label>
@@ -376,7 +376,7 @@ export function GradingForm({
           defaultValue={overallComment}
           rows={5}
           placeholder="Tulis rangkuman perkembangan anak selama semester ini…"
-          className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-300 resize-none"
+          className="w-full text-sm bg-surface border border-gray-200 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-accent/30 resize-none"
         />
       </div>
 
@@ -387,7 +387,7 @@ export function GradingForm({
           name="_action"
           value="draft"
           disabled={isPending}
-          className="px-5 py-2.5 text-sm font-medium border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 disabled:opacity-50 transition-colors"
+          className="px-5 py-2.5 text-sm font-medium border border-gray-200 rounded-xl text-gray-700 hover:bg-surface disabled:opacity-50 transition-colors"
         >
           {isPending ? "Saving…" : "Save Draft"}
         </button>
@@ -396,7 +396,7 @@ export function GradingForm({
           name="_action"
           value="publish"
           disabled={isPending}
-          className="px-5 py-2.5 text-sm font-medium bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 transition-colors"
+          className="px-5 py-2.5 text-sm font-medium bg-accent text-white rounded-xl hover:bg-accent/90 disabled:opacity-50 transition-colors"
         >
           {isPending ? "Publishing…" : isPublished ? "Re-publish" : "Publish Report Card"}
         </button>

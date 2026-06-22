@@ -15,8 +15,8 @@ export default async function GradebookPage() {
   if (!activePeriod) {
     return (
       <div className="p-6">
-        <h1 className="text-xl font-bold text-gray-900 mb-2">Gradebook</h1>
-        <div className="bg-orange-50 border border-orange-200 rounded-xl p-6 text-orange-700">
+        <h1 className="text-xl font-bold text-ink mb-2">Gradebook</h1>
+        <div className="bg-orange-50 border border-orange-200 rounded-2xl p-6 text-orange-700">
           No active reporting period. Ask your admin to activate a period.
         </div>
       </div>
@@ -57,11 +57,11 @@ export default async function GradebookPage() {
   return (
     <div className="p-6">
       <div className="mb-6">
-        <h1 className="text-xl font-bold text-gray-900">Gradebook</h1>
+        <h1 className="text-xl font-bold text-ink">Gradebook</h1>
         <p className="text-sm text-gray-500">
-          Period: <span className="font-medium text-indigo-600">{activePeriod.name}</span>
+          Period: <span className="font-medium text-accent">{activePeriod.name}</span>
           {" · "}
-          <span className="text-indigo-600 font-medium">{myPicCount}</span> student{myPicCount !== 1 ? "s" : ""} assigned to you as PIC
+          <span className="text-accent font-medium">{myPicCount}</span> student{myPicCount !== 1 ? "s" : ""} assigned to you as PIC
         </p>
       </div>
 
@@ -69,13 +69,13 @@ export default async function GradebookPage() {
         {grouped.map(({ cls, students }) => (
           <div key={cls.id}>
             <div className="flex items-center gap-3 mb-3">
-              <h2 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">{cls.name}</h2>
+              <h2 className="text-sm font-semibold text-gray-600 uppercase tracking-wide">{cls.name}</h2>
               <span className="text-xs text-gray-400">{students.length} students</span>
             </div>
 
-            <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
               <table className="w-full text-sm">
-                <thead className="bg-gray-50 border-b border-gray-200">
+                <thead className="bg-surface border-b border-gray-100">
                   <tr>
                     <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Student</th>
                     <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">PIC Teacher</th>
@@ -96,21 +96,21 @@ export default async function GradebookPage() {
                     const summary = summaryMap[student.id];
 
                     return (
-                      <tr key={student.id} className={`transition-colors ${isPic ? "hover:bg-gray-50" : "bg-gray-50/40"}`}>
+                      <tr key={student.id} className={`transition-colors ${isPic ? "hover:bg-surface/40" : "bg-gray-50/40"}`}>
                         <td className="px-4 py-3">
                           <div className="flex items-center gap-3">
-                            <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${isPic ? "bg-indigo-100 text-indigo-700" : "bg-gray-100 text-gray-400"}`}>
+                            <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${isPic ? "bg-accent/10 text-accent" : "bg-gray-100 text-gray-400"}`}>
                               {student.fullName.charAt(0)}
                             </div>
                             <div>
-                              <p className={`font-medium ${isPic ? "text-gray-900" : "text-gray-500"}`}>{student.fullName}</p>
-                              {student.nickname && <p className="text-xs text-gray-400">"{student.nickname}"</p>}
+                              <p className={`font-medium ${isPic ? "text-ink" : "text-gray-500"}`}>{student.fullName}</p>
+                              {student.nickname && <p className="text-xs text-gray-400">&ldquo;{student.nickname}&rdquo;</p>}
                             </div>
                           </div>
                         </td>
                         <td className="px-4 py-3">
                           {student.picTeacher ? (
-                            <span className={`text-xs font-medium ${isPic ? "text-indigo-600" : "text-gray-500"}`}>
+                            <span className={`text-xs font-medium ${isPic ? "text-accent" : "text-gray-500"}`}>
                               {isPic ? "You" : student.picTeacher.name}
                             </span>
                           ) : (
@@ -134,7 +134,7 @@ export default async function GradebookPage() {
                           {isPic ? (
                             <Link
                               href={`/teacher/students/${student.id}`}
-                              className="inline-flex items-center gap-1 px-3 py-1.5 text-xs text-indigo-600 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors font-medium"
+                              className="inline-flex items-center gap-1 px-3 py-1.5 text-xs text-accent bg-accent/10 rounded-xl hover:bg-accent/20 transition-colors font-medium"
                             >
                               <Pencil size={11} />
                               Grade
@@ -142,7 +142,7 @@ export default async function GradebookPage() {
                           ) : (
                             <Link
                               href={`/teacher/students/${student.id}`}
-                              className="inline-flex items-center gap-1 px-3 py-1.5 text-xs text-gray-400 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                              className="inline-flex items-center gap-1 px-3 py-1.5 text-xs text-gray-400 bg-gray-100 rounded-xl hover:bg-gray-200 transition-colors"
                             >
                               <Lock size={11} />
                               View
@@ -159,7 +159,7 @@ export default async function GradebookPage() {
         ))}
 
         {allStudents.length === 0 && (
-          <div className="bg-white rounded-xl border border-gray-200 p-10 text-center text-gray-400">
+          <div className="bg-white rounded-2xl border border-gray-100 p-10 text-center text-gray-400">
             No students enrolled yet.
           </div>
         )}
@@ -168,7 +168,7 @@ export default async function GradebookPage() {
       {/* Legend */}
       <div className="mt-6 flex items-center gap-4 text-xs text-gray-500">
         <div className="flex items-center gap-1.5">
-          <div className="w-3 h-3 rounded-full bg-indigo-100" />
+          <div className="w-3 h-3 rounded-full bg-accent/10" />
           <span>Your PIC students (can grade)</span>
         </div>
         <div className="flex items-center gap-1.5">
